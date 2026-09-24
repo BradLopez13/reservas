@@ -1,0 +1,5 @@
+{
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }],
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm db:migrate"
+}
