@@ -25,7 +25,7 @@ export async function iniciarSesion(deps: DepsAuth, datos: { email: string; pass
   const { token, hash } = generarToken();
   await deps.db.transaction(async (tx) => {
     await deps.intentos.limpiar(tx, clave);
-    await deps.sesiones.crear(tx, { usuarioId: usuario.id, tokenHash: hash, expiraEn: expiracion(ahora, ahora) });
+    await deps.sesiones.crear(tx, { usuarioId: usuario.id, tokenHash: hash, creadaEn: ahora, expiraEn: expiracion(ahora, ahora) });
   });
   return { usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre }, token };
 }
