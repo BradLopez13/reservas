@@ -1,8 +1,12 @@
 packages:
   - packages/*
   - apps/*
+
+# pnpm 12 no ejecuta scripts de instalacion sin aprobarlos. esbuild (tsx, vitest)
+# y protobufjs (testcontainers) los necesitan; cpu-features y ssh2 son nativos
+# opcionales de testcontainers y funcionan sin compilar.
 allowBuilds:
-  cpu-features: set this to true or false
-  esbuild: set this to true or false
-  protobufjs: set this to true or false
-  ssh2: set this to true or false
+  esbuild: true
+  protobufjs: true
+  cpu-features: false
+  ssh2: false
