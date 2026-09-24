@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/infra/db/migrar.ts",
+    "db:migrate": "tsx src/shared/db/migrar.ts",
     "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
