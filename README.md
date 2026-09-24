@@ -66,7 +66,15 @@ apps/api/src/
     infra/              Repositorios, rutas y adaptadores (sesión, idempotencia).
 apps/web/src/
   shared/               Cliente axios con interceptores, componentes base, hooks, fechas, React Bits.
-  features/<feature>/   api + mappers + páginas de cada funcionalidad (auth, pistas, reservas).
+  features/<feature>/   Cada funcionalidad (auth, pistas, reservas) con la misma anatomía:
+    api.ts              servicio HTTP: llama a la API y valida la respuesta con Zod
+    mappers.ts          contrato → modelo de vista
+    queries.ts          claves de caché + hooks useQuery
+    mutations.ts        hooks useMutation, con sus invalidaciones
+    handlers.ts         funciones puras: FormData → contrato, error → mensaje (con tests)
+    hooks/useXxx.ts     la lógica de cada pantalla, que compone todo lo anterior
+    views/XxxView.tsx   presentación pura: props dentro, JSX fuera, sin hooks de datos
+    XxxPage.tsx         contenedor: llama al hook y pinta la vista
 infra/                  nginx + docker compose: la app completa como en producción.
 e2e/                    Playwright contra ese docker compose.
 ```

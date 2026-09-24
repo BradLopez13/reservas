@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import type { ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
 import { servidor } from '../../test/servidor.ts';
-import { useReservar } from './useReservar.ts';
+import { useReservar } from './mutations.ts';
 
 const UUID = '0d1f7c6e-9a4b-4c1e-8f2a-3b5d7e9f1a2b';
 const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={new QueryClient()}>{children}</QueryClientProvider>;
