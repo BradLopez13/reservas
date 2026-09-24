@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "outDir": "dist", "rootDir": "..", "types": ["node"], "rewriteRelativeImportExtensions": true },
-  "include": ["src", "../../packages/contracts/src"]
+  "compilerOptions": { "outDir": "dist", "rootDir": "../..", "types": ["node"], "rewriteRelativeImportExtensions": true },
+  "include": ["src", "../../packages/contracts/src"],
+  "exclude": ["**/*.test.ts"]
 }
