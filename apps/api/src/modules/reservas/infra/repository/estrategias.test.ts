@@ -1,12 +1,10 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { arrancarPostgres, quitarExclude } from '../../../test/contenedor.ts';
+import { arrancarPostgres, quitarExclude } from '../../../../../test/contenedor.ts';
 import { reservarPista } from '../../application/reservarPista.ts';
-import { PistaOcupadaError } from '../../domain/errores.ts';
-import { crearDb } from '../db/cliente.ts';
-import { pistas, reservas, usuarios } from '../db/schema.ts';
-import { crearReservaRepository } from './estrategia.ts';
-import { idempotenciaRepository } from './idempotencia.ts';
-import { pistaRepository } from './pistas.ts';
+import { PistaOcupadaError } from '../../../../shared/errores.ts';
+import { crearDb } from '../../../../shared/db/cliente.ts';
+import { pistas, reservas, usuarios } from '../../../../shared/db/schema.ts';
+import { crearRepos } from '../../../../contexto.ts';
 
 const ESTRATEGIAS = ['pesimista', 'optimista', 'exclude'] as const;
 
@@ -18,7 +16,7 @@ describe.each(ESTRATEGIAS)('estrategia %s', (nombre) => {
   let usuarioId: string;
   let pistaId: string;
   const inicio = new Date('2026-10-25T08:00:00Z');
-  const deps = () => ({ db: conn.db, pistas: pistaRepository, reservas: crearReservaRepository(nombre), idempotencia: idempotenciaRepository, ahora: () => new Date('2026-10-24T06:00:00Z') });
+  const deps = () => ({ db: conn.db, repos: crearRepos({ estrategiaReservas: nombre }), ahora: () => new Date('2026-10-24T06:00:00Z') });
 
   beforeAll(async () => {
     pg = await arrancarPostgres();

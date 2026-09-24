@@ -1,8 +1,8 @@
 import { eq, sql } from 'drizzle-orm';
-import { PistaOcupadaError } from '../../domain/errores.ts';
+import { PistaOcupadaError } from '../../../../shared/errores.ts';
 import type { ReservaRepository } from '../../domain/ports.ts';
-import { pistas } from '../db/schema.ts';
-import { comunes, haySolape, insertar } from './reservas.base.ts';
+import { pistas } from '../../../../shared/db/schema.ts';
+import { comunes, haySolape, insertar } from './base.ts';
 
 // Bloqueo pesimista: se bloquea la fila de la pista y las peticiones que compiten
 // esperan en fila. Al salir del bloqueo se ve lo que la anterior ha confirmado

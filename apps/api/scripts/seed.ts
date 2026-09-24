@@ -1,6 +1,6 @@
-import { leerConfig } from '../src/config.ts';
-import { crearDb } from '../src/infra/db/cliente.ts';
-import { pistas } from '../src/infra/db/schema.ts';
+import { leerConfig } from '../src/shared/config.ts';
+import { crearDb } from '../src/shared/db/cliente.ts';
+import { pistas } from '../src/shared/db/schema.ts';
 
 const { db, sql } = crearDb(leerConfig().databaseUrl, 1);
 const existentes = await db.select().from(pistas);

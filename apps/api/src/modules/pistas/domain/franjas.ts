@@ -1,5 +1,5 @@
-import type { Periodo } from '../infra/db/schema.ts';
-import { aUtc, fechaLocal } from './tiempo.ts';
+import type { Periodo } from '../../../shared/db/schema.ts';
+import { aUtc, fechaLocal } from '../../../shared/tiempo.ts';
 
 export interface HorarioPista { apertura: string; cierre: string; duracionMin: number }
 

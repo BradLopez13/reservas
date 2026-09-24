@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { puedeCancelar } from './reservas.ts';
+import { puedeCancelar } from './reglas.ts';
 
 describe('puedeCancelar', () => {
   const inicio = new Date('2026-10-24T10:00:00Z');

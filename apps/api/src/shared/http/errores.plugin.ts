@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { ZodError } from 'zod';
 import { CodigoError } from '@reservas/contracts';
-import { DemasiadosIntentos, ErrorDominio } from '../../../domain/errores.ts';
+import { DemasiadosIntentos, ErrorDominio } from '../errores.ts';
 
 export function registrarErrores(app: FastifyInstance) {
   app.setNotFoundHandler((_req, reply) => {

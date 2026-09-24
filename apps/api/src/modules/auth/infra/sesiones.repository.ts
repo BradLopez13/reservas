@@ -1,6 +1,6 @@
 import { and, eq, ne } from 'drizzle-orm';
-import type { SesionRepository } from '../../domain/ports.ts';
-import { sesiones } from '../db/schema.ts';
+import type { SesionRepository } from '../domain/ports.ts';
+import { sesiones } from '../../../shared/db/schema.ts';
 
 const aSesion = (f: typeof sesiones.$inferSelect) => ({ id: f.id, usuarioId: f.usuarioId, creadaEn: f.creadaEn, ultimoUso: f.ultimoUso, expiraEn: f.expiraEn });
 

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import type { UsuarioRepository } from '../../domain/ports.ts';
-import { usuarios } from '../db/schema.ts';
+import type { UsuarioRepository } from '../domain/ports.ts';
+import { usuarios } from '../../../shared/db/schema.ts';
 
 const aUsuario = (f: typeof usuarios.$inferSelect) => ({ id: f.id, email: f.email, nombre: f.nombre, passwordHash: f.passwordHash });
 

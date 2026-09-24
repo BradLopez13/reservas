@@ -1,7 +1,7 @@
 import type { ReservaRepository } from '../../domain/ports.ts';
-import { reservaRepositoryExclude } from './reservas.exclude.ts';
-import { reservaRepositoryOptimista } from './reservas.optimista.ts';
-import { reservaRepositoryPesimista } from './reservas.pesimista.ts';
+import { reservaRepositoryExclude } from './exclude.ts';
+import { reservaRepositoryOptimista } from './optimista.ts';
+import { reservaRepositoryPesimista } from './pesimista.ts';
 
 export type Estrategia = 'pesimista' | 'optimista' | 'exclude';
 

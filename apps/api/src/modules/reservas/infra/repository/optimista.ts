@@ -1,9 +1,9 @@
 import { and, eq, sql } from 'drizzle-orm';
-import { PistaOcupadaError } from '../../domain/errores.ts';
+import { PistaOcupadaError } from '../../../../shared/errores.ts';
 import type { ReservaRepository } from '../../domain/ports.ts';
-import { fechaLocal } from '../../domain/tiempo.ts';
-import { pistaDias } from '../db/schema.ts';
-import { comunes, haySolape, insertar } from './reservas.base.ts';
+import { fechaLocal } from '../../../../shared/tiempo.ts';
+import { pistaDias } from '../../../../shared/db/schema.ts';
+import { comunes, haySolape, insertar } from './base.ts';
 
 export class ConflictoVersion extends Error { constructor() { super('La versión del día cambió durante la reserva'); } }
 

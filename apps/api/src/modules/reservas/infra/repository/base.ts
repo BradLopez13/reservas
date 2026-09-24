@@ -1,8 +1,8 @@
 import { and, desc, eq, getTableColumns, sql } from 'drizzle-orm';
 import type { ReservaRepository } from '../../domain/ports.ts';
 import type { Reserva } from '../../domain/reserva.ts';
-import type { Tx } from '../db/cliente.ts';
-import { pistas, reservas, type Periodo } from '../db/schema.ts';
+import type { Tx } from '../../../../shared/db/cliente.ts';
+import { pistas, reservas, type Periodo } from '../../../../shared/db/schema.ts';
 
 type Fila = typeof reservas.$inferSelect & { pistaNombre: string; deporte: (typeof pistas.$inferSelect)['deporte'] };
 const aReserva = (f: Fila): Reserva => ({ id: f.id, pistaId: f.pistaId, pistaNombre: f.pistaNombre, deporte: f.deporte, usuarioId: f.usuarioId, periodo: f.periodo, estado: f.estado });

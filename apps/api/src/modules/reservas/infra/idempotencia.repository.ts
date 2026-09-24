@@ -1,6 +1,6 @@
 import { and, eq, lt } from 'drizzle-orm';
-import type { IdempotenciaRepository } from '../../domain/ports.ts';
-import { idempotencia } from '../db/schema.ts';
+import type { IdempotenciaRepository } from '../domain/ports.ts';
+import { idempotencia } from '../../../shared/db/schema.ts';
 
 const CADUCIDAD_MS = 24 * 60 * 60 * 1000;
 

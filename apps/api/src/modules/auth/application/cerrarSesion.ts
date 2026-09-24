@@ -1,4 +1,4 @@
-import type { DepsAuth } from './deps.ts';
+import type { Ctx } from '../../../contexto.ts';
 
-export const cerrarSesion = (deps: DepsAuth, sesionId: string) => deps.db.transaction((tx) => deps.sesiones.borrar(tx, sesionId));
-export const cerrarTodasLasSesiones = (deps: DepsAuth, usuarioId: string) => deps.db.transaction((tx) => deps.sesiones.borrarDeUsuario(tx, usuarioId));
+export const cerrarSesion = (ctx: Ctx, sesionId: string) => ctx.db.transaction((tx) => ctx.repos.sesiones.borrar(tx, sesionId));
+export const cerrarTodasLasSesiones = (ctx: Ctx, usuarioId: string) => ctx.db.transaction((tx) => ctx.repos.sesiones.borrarDeUsuario(tx, usuarioId));

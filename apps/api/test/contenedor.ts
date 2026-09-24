@@ -1,6 +1,6 @@
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import type postgres from 'postgres';
-import { aplicarMigraciones } from '../src/infra/db/migrar.ts';
+import { aplicarMigraciones } from '../src/shared/db/migrar.ts';
 
 export async function arrancarPostgres() {
   const c = await new PostgreSqlContainer('postgres:17-alpine').start();

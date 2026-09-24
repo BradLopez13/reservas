@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { arrancarPostgres } from '../../../../test/contenedor.ts';
 import { cookieDe, crearAppTest, ORIGEN } from '../../../../test/appTest.ts';
-import { pistas } from '../../db/schema.ts';
+import { pistas } from '../../../shared/db/schema.ts';
 
 let pg: Awaited<ReturnType<typeof arrancarPostgres>>;
 let t: Awaited<ReturnType<typeof crearAppTest>>;
@@ -13,7 +13,7 @@ const inicio = '2026-10-25T08:00:00.000Z';
 
 beforeAll(async () => {
   pg = await arrancarPostgres(); t = await crearAppTest(pg);
-  const [p] = await t.deps.db.insert(pistas).values({ nombre: 'Pádel 1', deporte: 'padel', duracionMin: 90, apertura: '09:00', cierre: '22:00' }).returning();
+  const [p] = await t.ctx.db.insert(pistas).values({ nombre: 'Pádel 1', deporte: 'padel', duracionMin: 90, apertura: '09:00', cierre: '22:00' }).returning();
   pistaId = p!.id;
   cookie = cookieDe(await t.app.inject({ method: 'POST', url: '/api/auth/registro', headers: { origin: ORIGEN }, payload: { email: 'ana@example.com', password: 'contraseña-larga', nombre: 'Ana' } }));
   cookie2 = cookieDe(await t.app.inject({ method: 'POST', url: '/api/auth/registro', headers: { origin: ORIGEN }, payload: { email: 'luis@example.com', password: 'contraseña-larga', nombre: 'Luis' } }));

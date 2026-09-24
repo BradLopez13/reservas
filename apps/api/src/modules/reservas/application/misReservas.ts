@@ -1,3 +1,3 @@
-import type { DepsReservas } from './reservarPista.ts';
+import type { Ctx } from '../../../contexto.ts';
 
-export const misReservas = (deps: DepsReservas, usuarioId: string) => deps.db.transaction((tx) => deps.reservas.listarDeUsuario(tx, usuarioId));
+export const misReservas = (ctx: Ctx, usuarioId: string) => ctx.db.transaction((tx) => ctx.repos.reservas.listarDeUsuario(tx, usuarioId));

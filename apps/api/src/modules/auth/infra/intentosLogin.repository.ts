@@ -1,6 +1,6 @@
 import { and, count, eq, gte, min } from 'drizzle-orm';
-import type { IntentoLoginRepository } from '../../domain/ports.ts';
-import { intentosLogin } from '../db/schema.ts';
+import type { IntentoLoginRepository } from '../domain/ports.ts';
+import { intentosLogin } from '../../../shared/db/schema.ts';
 
 // Los intentos viven en la base de datos y no en memoria: en Vercel cada
 // instancia de la función tiene su propia memoria.

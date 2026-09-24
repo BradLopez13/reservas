@@ -1,29 +1,26 @@
 import Fastify from 'fastify';
-import type { Config } from './config.ts';
-import type { IdempotenciaRepository, IntentoLoginRepository, PistaRepository, ReservaRepository, SesionRepository, UsuarioRepository } from './domain/ports.ts';
-import type { Db } from './infra/db/cliente.ts';
-import { registrarErrores } from './infra/http/plugins/errores.ts';
-import { registrarOrigen } from './infra/http/plugins/origen.ts';
-import { registrarSesion } from './infra/http/plugins/sesion.ts';
-import { rutasAuth } from './infra/http/rutas/auth.ts';
-import { rutasPistas } from './infra/http/rutas/pistas.ts';
-import { rutasReservas } from './infra/http/rutas/reservas.ts';
+import type { Contexto } from './contexto.ts';
+import { rutasAuth } from './modules/auth/infra/rutas.ts';
+import { registrarSesion } from './modules/auth/infra/sesion.plugin.ts';
+import { rutasPistas } from './modules/pistas/infra/rutas.ts';
+import { rutasReservas } from './modules/reservas/infra/rutas.ts';
+import { registrarErrores } from './shared/http/errores.plugin.ts';
+import { registrarOrigen } from './shared/http/origen.plugin.ts';
 
-export interface Dependencias {
-  config: Config;
-  db: Db;
-  repos: { usuarios: UsuarioRepository; sesiones: SesionRepository; intentos: IntentoLoginRepository; pistas: PistaRepository; reservas: ReservaRepository; idempotencia: IdempotenciaRepository };
-  ahora: () => Date;
-}
-
-export async function crearApp(deps: Dependencias) {
+export async function crearApp(ctx: Contexto) {
   const app = Fastify({ logger: process.env.NODE_ENV !== 'test' });
+
+  // Transversal: formato de errores, defensa CSRF y sesión.
   registrarErrores(app);
-  registrarOrigen(app, deps.config.appOrigin);
-  await registrarSesion(app, deps);
+  registrarOrigen(app, ctx.config.appOrigin);
+  await registrarSesion(app, ctx);
+
   app.get('/api/healthz', async () => ({ ok: true }));
-  rutasAuth(app, deps);
-  rutasPistas(app, deps);
-  rutasReservas(app, deps);
+
+  // Un módulo por funcionalidad; cada uno registra sus rutas.
+  rutasAuth(app, ctx);
+  rutasPistas(app, ctx);
+  rutasReservas(app, ctx);
+
   return app;
 }

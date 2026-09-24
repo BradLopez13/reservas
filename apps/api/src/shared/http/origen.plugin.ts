@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { OrigenNoPermitido } from '../../../domain/errores.ts';
+import { OrigenNoPermitido } from '../errores.ts';
 
 const SEGUROS = new Set(['GET', 'HEAD', 'OPTIONS']);
 

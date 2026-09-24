@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { arrancarPostgres } from '../../../../test/contenedor.ts';
 import { crearAppTest } from '../../../../test/appTest.ts';
-import { pistas } from '../../db/schema.ts';
+import { pistas } from '../../../shared/db/schema.ts';
 
 let pg: Awaited<ReturnType<typeof arrancarPostgres>>;
 let t: Awaited<ReturnType<typeof crearAppTest>>;
@@ -9,7 +9,7 @@ let pistaId: string;
 
 beforeAll(async () => {
   pg = await arrancarPostgres(); t = await crearAppTest(pg);
-  const [p] = await t.deps.db.insert(pistas).values({ nombre: 'Pádel 1', deporte: 'padel', duracionMin: 90, apertura: '09:00', cierre: '22:00' }).returning();
+  const [p] = await t.ctx.db.insert(pistas).values({ nombre: 'Pádel 1', deporte: 'padel', duracionMin: 90, apertura: '09:00', cierre: '22:00' }).returning();
   pistaId = p!.id;
 });
 afterAll(async () => { await t.cerrar(); await pg.parar(); });
