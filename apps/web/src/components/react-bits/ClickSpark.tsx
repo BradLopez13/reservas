@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
+import ClickSparkBits from './ClickSpark.bits.tsx';
+import { useReducedMotion } from './reducedMotion.ts';
 
-// Provisional sin animación; la Tarea 11 lo sustituye por el envoltorio de React Bits.
+// Chispas al confirmar la reserva.
 export function ClickSpark({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  if (useReducedMotion()) return <>{children}</>;
+  return <ClickSparkBits sparkColor="#047857" sparkCount={8} sparkRadius={18}>{children}</ClickSparkBits>;
 }

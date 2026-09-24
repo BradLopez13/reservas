@@ -1,4 +1,11 @@
-// Provisional sin animación; la Tarea 11 lo sustituye por el envoltorio de React Bits.
+import BlurTextBits from './BlurText.bits.tsx';
+import { useReducedMotion } from './reducedMotion.ts';
+
 export function BlurText({ text, className }: { text: string; className?: string }) {
-  return <h1 className={className}>{text}</h1>;
+  if (useReducedMotion()) return <h1 className={className}>{text}</h1>;
+  return (
+    <div data-animado>
+      <BlurTextBits text={text} {...(className ? { className } : {})} animateBy="words" delay={80} />
+    </div>
+  );
 }
