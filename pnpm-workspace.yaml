@@ -1,6 +1,7 @@
 packages:
   - packages/*
   - apps/*
+  - e2e
 
 # pnpm 12 no ejecuta scripts de instalacion sin aprobarlos. esbuild (tsx, vitest)
 # y protobufjs (testcontainers) los necesitan; cpu-features y ssh2 son nativos

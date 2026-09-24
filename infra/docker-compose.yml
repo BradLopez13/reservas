@@ -1,0 +1,19 @@
+# La app completa como en producción: nginx delante, API y PostgreSQL detrás.
+# Es contra lo que corren los tests de Playwright.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment: { POSTGRES_USER: reservas, POSTGRES_PASSWORD: reservas, POSTGRES_DB: reservas }
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U reservas"], interval: 2s, retries: 15 }
+  api:
+    build: { context: .., dockerfile: infra/api.Dockerfile }
+    environment:
+      DATABASE_URL: postgres://reservas:reservas@postgres:5432/reservas
+      APP_ORIGIN: http://localhost:8080
+      COOKIE_SECURE: "false"
+      RESERVAS_ESTRATEGIA: exclude
+    depends_on: { postgres: { condition: service_healthy } }
+  web:
+    build: { context: .., dockerfile: infra/web.Dockerfile }
+    ports: ["8080:80"]
+    depends_on: [api]
