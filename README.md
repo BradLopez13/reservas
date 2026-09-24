@@ -116,7 +116,7 @@ Requiere Node 24, pnpm y Docker.
 
 ## Despliegue
 
-Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web reescribe `/api/*` al proyecto de la API, así que el navegador ve un solo origen y la cookie funciona igual que en local. La base de datos es PostgreSQL en Neon (plan gratuito): tras cinco minutos sin uso se suspende y la primera petición tarda alrededor de un segundo.
+Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web reescribe `/api/*` al proyecto de la API, así que el navegador ve un solo origen y la cookie funciona igual que en local. La base de datos es PostgreSQL en Supabase (plan gratuito), a través de su pooler en modo transacción; por eso el cliente usa `prepare: false`. Supabase pausa el proyecto tras una semana sin actividad y hay que reanudarlo desde su panel.
 
 ## Créditos
 
