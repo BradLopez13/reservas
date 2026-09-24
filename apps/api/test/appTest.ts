@@ -2,6 +2,7 @@ import { crearApp } from '../src/app.ts';
 import { leerConfig } from '../src/config.ts';
 import { crearDb } from '../src/infra/db/cliente.ts';
 import { intentoLoginRepository } from '../src/infra/repositories/intentosLogin.ts';
+import { pistaRepository } from '../src/infra/repositories/pistas.ts';
 import { sesionRepository } from '../src/infra/repositories/sesiones.ts';
 import { usuarioRepository } from '../src/infra/repositories/usuarios.ts';
 
@@ -13,7 +14,7 @@ export async function crearAppTest(pg: { url: string }) {
   const reloj = { valor: new Date('2026-10-24T06:00:00Z'), set(d: Date) { this.valor = d; } };
   const deps = {
     config, db, ahora: () => reloj.valor,
-    repos: { usuarios: usuarioRepository, sesiones: sesionRepository, intentos: intentoLoginRepository },
+    repos: { usuarios: usuarioRepository, sesiones: sesionRepository, intentos: intentoLoginRepository, pistas: pistaRepository, reservas: { listarConfirmadas: async () => [] } },
   };
   const app = await crearApp(deps);
   return { app, deps, reloj, sql, cerrar: async () => { await app.close(); await sql.end(); } };

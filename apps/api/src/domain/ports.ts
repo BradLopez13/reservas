@@ -1,6 +1,20 @@
+import type { Deporte } from '@reservas/contracts';
 import type { Tx } from '../infra/db/cliente.ts';
+import type { Periodo } from '../infra/db/schema.ts';
+import type { Pista } from './pista.ts';
 import type { Sesion } from './sesion.ts';
 import type { Usuario } from './usuario.ts';
+
+export interface PistaRepository {
+  listar(tx: Tx, deporte?: Deporte): Promise<Pista[]>;
+  buscarPorId(tx: Tx, id: string): Promise<Pista | null>;
+}
+
+// Se completa en la Tarea 8 con crear/cancelar/listar; de momento solo lo que
+// necesita la consulta de franjas.
+export interface ReservaRepository {
+  listarConfirmadas(tx: Tx, pistaId: string, dia: Periodo): Promise<Periodo[]>;
+}
 
 export interface UsuarioRepository {
   crear(tx: Tx, datos: { email: string; passwordHash: string; nombre: string }): Promise<Usuario>;
