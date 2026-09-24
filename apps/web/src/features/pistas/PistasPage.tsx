@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import type { Deporte } from '@reservas/contracts';
-import { listarPistas } from '../../api/pistas.ts';
-import { BlurText } from '../../components/react-bits/BlurText.tsx';
+import { listarPistas } from './api.ts';
+import { BlurText } from '../../shared/react-bits/BlurText.tsx';
 
 const DEPORTES: { valor: Deporte | undefined; texto: string }[] = [
   { valor: undefined, texto: 'Todas' }, { valor: 'padel', texto: 'Pádel' }, { valor: 'tenis', texto: 'Tenis' }, { valor: 'futbol', texto: 'Fútbol' },

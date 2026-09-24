@@ -1,6 +1,6 @@
 import { ReservaSchema, type CrearReserva } from '@reservas/contracts';
 import { z } from 'zod';
-import { cliente } from './cliente.ts';
+import { cliente } from '../../shared/api/cliente.ts';
 
 export const crearReserva = async (d: CrearReserva, idempotencyKey: string) =>
   ReservaSchema.parse((await cliente.post('/reservas', d, { idempotencyKey })).data);

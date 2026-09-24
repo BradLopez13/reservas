@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { franjasDe } from '../../api/pistas.ts';
-import { AnimatedList } from '../../components/react-bits/AnimatedList.tsx';
-import { aFranjaVista, type FranjaVista } from '../../mappers/franjas.ts';
+import { franjasDe } from './api.ts';
+import { AnimatedList } from '../../shared/react-bits/AnimatedList.tsx';
+import { aFranjaVista, type FranjaVista } from './mappers.ts';
 import { useSesion } from '../auth/SesionProvider.tsx';
 import { ConfirmarReserva } from '../reservas/ConfirmarReserva.tsx';
-
-const hoy = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' }); // sv-SE da YYYY-MM-DD
+import { hoy } from '../../shared/fechas.ts';
 
 export function FranjasDia() {
   const { id = '' } = useParams();

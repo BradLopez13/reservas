@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { cancelarReserva, misReservas } from '../../api/reservas.ts';
-import { Aviso } from '../../components/Aviso.tsx';
-import { aReservaVista } from '../../mappers/reservas.ts';
+import { cancelarReserva, misReservas } from './api.ts';
+import { Aviso } from '../../shared/components/Aviso.tsx';
+import { Boton } from '../../shared/components/Boton.tsx';
+import { aReservaVista } from './mappers.ts';
 
 export function MisReservasPage() {
   const qc = useQueryClient();
@@ -19,7 +20,7 @@ export function MisReservasPage() {
               <span className="font-semibold">{r.pistaNombre}</span> · {r.etiquetaDia} · {r.etiquetaHora}
               {r.estado === 'cancelada' && <span className="ml-2 text-xs uppercase">cancelada</span>}
             </div>
-            {r.cancelable && <button onClick={() => cancelar.mutate(r.id)} className="text-sm text-red-700 underline">Cancelar</button>}
+            {r.cancelable && <Boton variante="peligro" onClick={() => cancelar.mutate(r.id)}>Cancelar</Boton>}
           </li>
         ))}
       </ul>

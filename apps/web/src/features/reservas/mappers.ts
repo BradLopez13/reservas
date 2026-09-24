@@ -1,5 +1,5 @@
 import type { Reserva } from '@reservas/contracts';
-import { hora } from './franjas.ts';
+import { diaCorto, rangoHoras } from '../../shared/fechas.ts';
 
 export interface ReservaVista {
   id: string; pistaNombre: string; deporte: Reserva['deporte']; inicio: Date; fin: Date;
@@ -13,8 +13,8 @@ export function aReservaVista(r: Reserva, ahora: Date): ReservaVista {
   const fin = new Date(r.fin);
   return {
     id: r.id, pistaNombre: r.pistaNombre, deporte: r.deporte, inicio, fin,
-    etiquetaDia: inicio.toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid', weekday: 'short', day: 'numeric', month: 'short' }),
-    etiquetaHora: `${hora(inicio)}–${hora(fin)}`,
+    etiquetaDia: diaCorto(inicio),
+    etiquetaHora: rangoHoras(inicio, fin),
     estado: r.estado,
     cancelable: r.estado === 'confirmada' && inicio.getTime() - ahora.getTime() >= ANTELACION_MS,
   };

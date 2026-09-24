@@ -2,8 +2,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import type { Usuario } from '@reservas/contracts';
-import { logout, yo } from '../../api/auth.ts';
-import { alExpirarSesion } from '../../api/cliente.ts';
+import { logout, yo } from './api.ts';
+import { alExpirarSesion } from '../../shared/api/cliente.ts';
 
 interface Sesion { usuario: Usuario | null; cargando: boolean; refrescar(): Promise<void>; salir(): Promise<void> }
 const Ctx = createContext<Sesion | null>(null);

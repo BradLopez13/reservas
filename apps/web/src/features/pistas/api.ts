@@ -1,6 +1,6 @@
 import { FranjaSchema, PistaSchema, type Deporte } from '@reservas/contracts';
 import { z } from 'zod';
-import { cliente } from './cliente.ts';
+import { cliente } from '../../shared/api/cliente.ts';
 
 export const listarPistas = async (deporte?: Deporte) =>
   z.array(PistaSchema).parse((await cliente.get('/pistas', { params: deporte ? { deporte } : {} })).data);

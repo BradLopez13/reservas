@@ -1,9 +1,9 @@
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it, vi } from 'vitest';
-import { servidor } from '../test/servidor.ts';
+import { servidor } from '../../test/servidor.ts';
 import { alExpirarSesion, cliente } from './cliente.ts';
 import { ApiError } from './errores.ts';
-import { crearReserva } from './reservas.ts';
+import { crearReserva } from '../../features/reservas/api.ts';
 
 const UUID = '0d1f7c6e-9a4b-4c1e-8f2a-3b5d7e9f1a2b';
 const datos = { pistaId: UUID, inicio: '2026-10-25T08:00:00.000Z' };

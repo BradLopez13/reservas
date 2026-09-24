@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import type { CrearReserva, Reserva } from '@reservas/contracts';
-import type { ApiError } from '../../api/errores.ts';
-import { crearReserva } from '../../api/reservas.ts';
+import type { ApiError } from '../../shared/api/errores.ts';
+import { crearReserva } from './api.ts';
 
 // La clave de idempotencia vive con el intento: un reintento la reutiliza (y la
 // API devuelve la misma reserva), y una nueva confirmación la renueva.

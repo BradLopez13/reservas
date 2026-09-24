@@ -1,7 +1,7 @@
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/node_modules/**', '**/drizzle/**', 'apps/web/src/components/react-bits/**'] },
+  { ignores: ['**/dist/**', '**/node_modules/**', '**/drizzle/**', 'apps/web/src/shared/react-bits/**'] },
   ...tseslint.configs.recommended,
   { rules: { '@typescript-eslint/consistent-type-imports': 'error' } },
 );

@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router';
-import { useSesion } from '../features/auth/SesionProvider.tsx';
+import { useSesion } from '../../features/auth/SesionProvider.tsx';
 
 export function Layout() {
   const { usuario, salir } = useSesion();

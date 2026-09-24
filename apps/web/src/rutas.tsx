@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router';
-import { Layout } from './components/Layout.tsx';
+import { Layout } from './shared/components/Layout.tsx';
 import { AjustesPage } from './features/auth/AjustesPage.tsx';
 import { LoginPage } from './features/auth/LoginPage.tsx';
 import { RegistroPage } from './features/auth/RegistroPage.tsx';

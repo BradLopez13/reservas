@@ -42,7 +42,7 @@ Duration  20.30s
 | Optimista | Leer una versión por pista y día, comprobar, insertar, `UPDATE … WHERE version = leída` | Nadie espera; quien pierde el `UPDATE` reintenta y ve el solape | `reservas.optimista.ts` |
 | `EXCLUDE` | Restricción `EXCLUDE USING gist (pista_id WITH =, periodo WITH &&)` en la base de datos | La segunda inserción falla con `23P01`; PostgreSQL decide | `reservas.exclude.ts` |
 
-En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque alguien añada mañana otra ruta que inserte reservas. Los tests de las otras dos **quitan la restricción antes de correr**, para que la base de datos no les tape los fallos. Por qué estas tres y no otras: [ADR 0001](docs/decisions/0001-tres-estrategias.md).
+En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque alguien añada mañana otra ruta que inserte reservas. Los tests de las otras dos **quitan la restricción antes de correr**, para que la base de datos no les tape los fallos.
 
 ## Sesiones
 
@@ -53,26 +53,27 @@ En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque algui
 - CSRF: `SameSite=Lax` más la comprobación de `Origin` en toda petición que modifica datos.
 - Login con Argon2id, mismo error y mismo coste exista o no el email, y 5 intentos por email e IP cada 15 minutos.
 
-Por qué cookie y no JWT: [ADR 0002](docs/decisions/0002-sesiones-cookie.md).
-
 ## Arquitectura
 
 ```
-packages/contracts/   Esquemas Zod de lo que viaja por HTTP y códigos de error. No depende de nada.
-apps/api/             Fastify + Drizzle + PostgreSQL
-  src/domain/         Reglas y puertos. No importa Fastify ni Drizzle.
-  src/application/    Casos de uso: abren la transacción y la pasan a los repositorios.
-  src/infra/          Repositorios (las tres estrategias), rutas, sesión, migraciones.
-apps/web/             React 19 + Vite + React Router + TanStack Query + Tailwind
-  src/api/            Cliente axios con interceptores (Idempotency-Key, errores tipados, 401).
-  src/mappers/        Contrato → modelo de vista.
-  src/features/       auth, pistas, reservas.
-infra/                nginx + docker compose: la app completa como en producción.
-e2e/                  Playwright contra ese docker compose.
-docs/decisions/       ADR.
+packages/contracts/     Esquemas Zod de lo que viaja por HTTP y códigos de error. No depende de nada.
+apps/api/src/
+  contexto.ts           Raíz de composición: qué implementación recibe cada puerto.
+  shared/               Config, errores de dominio, tiempo, base de datos y plugins HTTP transversales.
+  modules/<feature>/    Un módulo vertical por funcionalidad (auth, pistas, reservas):
+    domain/             Entidades, reglas y puertos (interfaces). Sin Fastify ni Drizzle.
+    application/        Casos de uso: reciben el contexto, abren la transacción, orquestan.
+    infra/              Repositorios, rutas y adaptadores (sesión, idempotencia).
+apps/web/src/
+  shared/               Cliente axios con interceptores, componentes base, hooks, fechas, React Bits.
+  features/<feature>/   api + mappers + páginas de cada funcionalidad (auth, pistas, reservas).
+infra/                  nginx + docker compose: la app completa como en producción.
+e2e/                    Playwright contra ese docker compose.
 ```
 
-Recorrido de una petición: el navegador llama a `/api/reservas` en el mismo origen → el proxy la pasa a Fastify → la ruta valida con `contracts` → el caso de uso abre la transacción → el repositorio aplica la estrategia → el mapper devuelve el contrato → el cliente web valida la respuesta con el mismo esquema y la convierte en modelo de vista. Por qué contratos y mappers y no tRPC: [ADR 0003](docs/decisions/0003-contratos-y-mappers.md).
+Recorrido de una petición: el navegador llama a `/api/reservas` en el mismo origen → el proxy la pasa a Fastify → el decorador de idempotencia decide si ya se procesó → la ruta valida con `contracts` → el caso de uso abre la transacción → el repositorio aplica la estrategia → el mapper devuelve el contrato → el cliente web valida la respuesta con el mismo esquema y la convierte en modelo de vista.
+
+Patrones que sostienen eso: **puertos y adaptadores** (los casos de uso solo ven interfaces), **raíz de composición** (`contexto.ts` es el único sitio que conoce las implementaciones), **estrategia** (las tres formas de crear una reserva), **decorador** (la idempotencia envuelve al handler sin que la ruta sepa de ella) y **mappers** en cada frontera.
 
 Detalles que importan y que no se ven en una demo:
 
@@ -120,4 +121,4 @@ Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web r
 
 ## Créditos
 
-`BlurText` y `ClickSpark` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original y la licencia están en `apps/web/src/components/react-bits/`.
+`BlurText` y `ClickSpark` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original y la licencia están en `apps/web/src/shared/react-bits/`.

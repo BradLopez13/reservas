@@ -1,5 +1,5 @@
 import { UsuarioSchema, type CambiarPassword, type Login, type Registro } from '@reservas/contracts';
-import { cliente } from './cliente.ts';
+import { cliente } from '../../shared/api/cliente.ts';
 
 export const registro = async (d: Registro) => UsuarioSchema.parse((await cliente.post('/auth/registro', d)).data);
 export const login = async (d: Login) => { await cliente.post('/auth/login', d); };

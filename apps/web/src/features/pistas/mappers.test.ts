@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aFranjaVista } from './franjas.ts';
+import { aFranjaVista } from './mappers.ts';
 
 describe('aFranjaVista', () => {
   it('convierte a Date y etiqueta en hora de Madrid', () => {

@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router';
-import { Aviso } from '../../components/Aviso.tsx';
-import { ClickSpark } from '../../components/react-bits/ClickSpark.tsx';
-import type { FranjaVista } from '../../mappers/franjas.ts';
+import { Aviso } from '../../shared/components/Aviso.tsx';
+import { Boton } from '../../shared/components/Boton.tsx';
+import { ClickSpark } from '../../shared/react-bits/ClickSpark.tsx';
+import type { FranjaVista } from '../pistas/mappers.ts';
 import { useReservar } from './useReservar.ts';
 
 // Se monta al elegir una franja y se desmonta al cerrar: cada confirmación
@@ -19,15 +20,14 @@ export function ConfirmarReserva({ pistaId, franja, onCerrar }: { pistaId: strin
         {err && !ocupada && <Aviso tipo="error">No se ha podido reservar. Vuelve a intentarlo.</Aviso>}
         {mutation.isSuccess && <Aviso tipo="ok">Reserva confirmada.</Aviso>}
         <div className="flex justify-end gap-2">
-          <button onClick={onCerrar} className="rounded border px-4 py-2">{mutation.isSuccess || ocupada ? 'Cerrar' : 'Cancelar'}</button>
+          <Boton variante="secundario" onClick={onCerrar}>{mutation.isSuccess || ocupada ? 'Cerrar' : 'Cancelar'}</Boton>
           {mutation.isSuccess ? (
-            <button onClick={() => navigate('/mis-reservas')} className="rounded bg-emerald-700 px-4 py-2 text-white">Ver mis reservas</button>
+            <Boton onClick={() => navigate('/mis-reservas')}>Ver mis reservas</Boton>
           ) : !ocupada && (
             <ClickSpark>
-              <button disabled={mutation.isPending} onClick={() => mutation.mutate({ pistaId, inicio: franja.inicio.toISOString() })}
-                className="rounded bg-emerald-700 px-4 py-2 text-white disabled:opacity-50">
+              <Boton disabled={mutation.isPending} onClick={() => mutation.mutate({ pistaId, inicio: franja.inicio.toISOString() })}>
                 {mutation.isPending ? 'Reservando…' : 'Confirmar'}
-              </button>
+              </Boton>
             </ClickSpark>
           )}
         </div>
