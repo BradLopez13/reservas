@@ -71,7 +71,7 @@ apps/api/src/                             (hexagonal, un módulo vertical por fu
     infra/persistence/                    repositorios (las tres estrategias, idempotencia, sesiones…)
 
 apps/web/src/                             (MVVM: pantalla → hook → vista; carpetas solo TS o solo TSX)
-  shared/                                 api (axios + interceptores), components, hooks, fechas, react-bits
+  shared/                                 api (axios + interceptores), components, hooks, fechas, fotos, react-bits
   features/<feature>/
     api/                        TS        un cliente por recurso de la API
     mappers/                    TS        contrato → modelo de vista
@@ -86,6 +86,8 @@ infra/                    nginx + docker compose: la app completa como en produc
 e2e/                      Playwright contra ese docker compose.
 ```
 
+Las páginas informativas (cómo funciona, normas, sobre el proyecto y privacidad) viven en `features/info/screens/` y no tienen view-model: son solo vista.
+
 Recorrido de una petición: el navegador llama a `/api/reservas` en el mismo origen → el proxy la pasa a Fastify → el decorador de idempotencia decide si ya se procesó → la ruta valida con `contracts` → el caso de uso abre la transacción → el repositorio aplica la estrategia → el mapper devuelve el contrato → el cliente web valida la respuesta con el mismo esquema y la convierte en modelo de vista.
 
 Patrones que sostienen eso. En la API: **puertos y adaptadores** (los casos de uso solo ven interfaces), **comandos y consultas** separados, **raíz de composición** (`contexto.ts` es el único sitio que conoce las implementaciones), **estrategia** (las tres formas de crear una reserva), **decorador** (la idempotencia envuelve al handler sin que la ruta sepa de ella) y **mappers** en cada frontera. En la web no hay hexagonal, porque no hay dominio que proteger: hay **MVVM** (la pantalla es el controlador, el hook es el view-model, la vista es tonta) y una **capa de datos con caché** (queries y mutations) para no volver a pedir lo mismo.
@@ -94,7 +96,8 @@ Detalles que importan y que no se ven en una demo:
 
 - **Idempotencia** en `POST /reservas`: la cabecera `Idempotency-Key` la genera el frontend una vez por intento. Un doble clic o un reintento de red devuelven la misma reserva; la misma clave con otro cuerpo da un 422.
 - **Hora de Madrid**: las franjas se calculan en `Europe/Madrid` y se guardan en `timestamptz`. Hay un test para el último domingo de octubre.
-- **`prefers-reduced-motion`**: las tres animaciones se desactivan si el sistema lo pide.
+- **`prefers-reduced-motion`**: todas las animaciones (las de React Bits, la entrada del diálogo de confirmación y las transiciones CSS) se desactivan si el sistema lo pide.
+- **Un solo tema, el de la pista**: verde profundo de fondo y lima de la bola como único acento, definidos como tokens semánticos en `index.css`. Las dos animaciones ligadas al scroll de la portada usan GSAP con ScrollTrigger y también se apagan con `prefers-reduced-motion`.
 
 ## Ejecutar en local
 
@@ -138,4 +141,4 @@ Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web r
 
 ## Créditos
 
-`BlurText` y `ClickSpark` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original y la licencia están en `apps/web/src/shared/react-bits/`.
+`BlurText`, `ClickSpark`, `Magnet`, `GlareHover`, `CountUp` y `SpotlightCard` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original, la licencia y dónde se usa cada uno están en `apps/web/src/shared/react-bits/`. Las tipografías son [Geist](https://vercel.com/font) y [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL, servidas desde Fontsource), los iconos son de [Phosphor](https://phosphoricons.com) (MIT) y las fotografías, de [Unsplash](https://unsplash.com) (licencia Unsplash); sus URL están en `apps/web/src/shared/fotos.ts`.

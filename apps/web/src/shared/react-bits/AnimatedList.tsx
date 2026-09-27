@@ -2,13 +2,13 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useReducedMotion } from '../hooks/useReducedMotion.ts';
 
-interface Props<T> { items: T[]; keyOf: (t: T) => string; render: (t: T) => ReactNode }
+interface Props<T> { items: T[]; keyOf: (t: T) => string; render: (t: T) => ReactNode; className?: string }
 
 // Aparición en cascada de las franjas al cambiar de día.
-export function AnimatedList<T>({ items, keyOf, render }: Props<T>) {
+export function AnimatedList<T>({ items, keyOf, render, className = 'flex flex-col gap-2' }: Props<T>) {
   const reducido = useReducedMotion();
   return (
-    <ul className="flex flex-col gap-2" data-animado={reducido ? undefined : ''}>
+    <ul className={className} data-animado={reducido ? undefined : ''}>
       {items.map((t, i) => reducido
         ? <li key={keyOf(t)}>{render(t)}</li>
         : (

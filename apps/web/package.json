@@ -11,9 +11,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@gsap/react": "^2.1.2",
+    "@phosphor-icons/react": "^2.1.10",
     "@reservas/contracts": "workspace:*",
     "@tanstack/react-query": "^5.103.2",
     "axios": "^1.20.0",
+    "gsap": "^3.15.0",
     "motion": "^13.4.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

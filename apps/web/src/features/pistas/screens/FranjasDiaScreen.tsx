@@ -7,7 +7,9 @@ export function FranjasDiaScreen() {
   return (
     <FranjasDiaView
       {...vista}
-      confirmacion={seleccion && <ConfirmarReservaScreen pistaId={pistaId} franja={seleccion} onCerrar={onCerrarConfirmacion} />}
+      confirmacion={seleccion && (
+        <ConfirmarReservaScreen pistaId={pistaId} pistaNombre={vista.pista?.nombre} franja={seleccion} onCerrar={onCerrarConfirmacion} />
+      )}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import type { ApiError } from '../../../shared/api/errores.ts';
+import { diaCorto } from '../../../shared/fechas.ts';
 import type { FranjaVista } from '../../pistas/mappers/franja.mapper.ts';
 import { useReservar } from '../mutations/useReservasMutations.ts';
 
@@ -19,6 +20,7 @@ export function useConfirmarReserva(pistaId: string, franja: FranjaVista) {
   const navigate = useNavigate();
   return {
     etiqueta: franja.etiqueta,
+    dia: diaCorto(franja.inicio),
     estado: estadoConfirmacion(mutation),
     onConfirmar: () => mutation.mutate({ pistaId, inicio: franja.inicio.toISOString() }),
     onVerReservas: () => navigate('/mis-reservas'),

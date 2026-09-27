@@ -1,10 +1,24 @@
 import type { FranjaVista } from '../mappers/franja.mapper.ts';
 
-export function FranjaItem({ franja, deshabilitada, onElegir }: { franja: FranjaVista; deshabilitada: boolean; onElegir: (f: FranjaVista) => void }) {
+export type EstadoFranja = 'libre' | 'ocupada' | 'pasada';
+
+const TEXTO: Record<EstadoFranja, string> = { libre: 'Libre', ocupada: 'Ocupada', pasada: 'Pasada' };
+
+export function FranjaItem({ franja, estado, onElegir }: { franja: FranjaVista; estado: EstadoFranja; onElegir: (f: FranjaVista) => void }) {
+  const libre = estado === 'libre';
   return (
-    <button disabled={deshabilitada} onClick={() => onElegir(franja)}
-      className="w-full rounded-lg border bg-white px-4 py-3 text-left hover:border-emerald-600 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-400">
-      {franja.etiqueta} <span className="float-right text-sm">{franja.libre ? 'Libre' : 'Ocupada'}</span>
+    <button
+      type="button"
+      disabled={!libre}
+      onClick={() => onElegir(franja)}
+      className={`group flex w-full flex-col items-start gap-0.5 rounded-[1.25rem] border px-4 py-3.5 text-left transition-[border-color,background-color,color,transform] duration-500 ease-suave ${
+        libre
+          ? 'border-borde bg-superficie hover:border-acento hover:bg-acento hover:text-sobre-acento active:scale-[0.98]'
+          : 'cursor-not-allowed border-transparent bg-superficie/40 text-tinta-3'
+      }`}
+    >
+      <span className="font-medium tabular-nums">{franja.etiqueta}</span>
+      <span className={`text-xs ${libre ? 'font-medium text-acento group-hover:text-sobre-acento' : ''}`}>{TEXTO[estado]}</span>
     </button>
   );
 }
