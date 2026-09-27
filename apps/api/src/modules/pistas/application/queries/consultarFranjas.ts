@@ -9,7 +9,7 @@ export async function consultarFranjas(ctx: Ctx, pistaId: string, fecha: string)
     if (!pista) throw new PistaNoEncontrada();
     const franjas = generarFranjas(pista, fecha);
     if (franjas.length === 0) return [];
-    const dia = { inicio: franjas[0]!.inicio, fin: franjas.at(-1)!.fin };
+    const dia = { inicio: franjas[0]!.inicio, fin: franjas[franjas.length - 1]!.fin };
     const ocupadas = await ctx.repos.reservas.listarConfirmadas(tx, pistaId, dia);
     return franjas.map((f) => ({
       inicio: f.inicio.toISOString(), fin: f.fin.toISOString(),
