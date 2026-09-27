@@ -10,8 +10,6 @@ export interface Foto { src: string; alt: ClaveFoto }
 
 export const FOTO_PORTADA: Foto = { src: unsplash('1554068865-24cecd4e34b8', 1400, 1050), alt: 'fotos.portada' };
 
-export const FOTO_PORTADA_ANCHA: Foto = { src: unsplash('1554068865-24cecd4e34b8', 2000, 1250), alt: 'fotos.portada' };
-
 export const FOTO_CARRERA: Foto = { src: unsplash('1587280501635-68a0e82cd5ff', 1200, 900), alt: 'fotos.carrera' };
 
 export const FOTO_ENTRAR: Foto = { src: unsplash('1622163642998-1ea32b0bbc67', 1000, 1250), alt: 'fotos.entrar' };

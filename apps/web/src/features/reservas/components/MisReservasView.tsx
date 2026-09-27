@@ -12,17 +12,24 @@ export interface MisReservasViewProps { reservas: ReservaVista[]; cargando: bool
 
 export function MisReservasView({ reservas, cargando, error, onCancelar }: MisReservasViewProps) {
   const { t } = useT();
+  const confirmadas = reservas.filter((r) => r.estado === 'confirmada').length;
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-8">
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-tinta">{t('misReservas.titulo')}</h1>
-        <p className="text-tinta-2">{t('misReservas.subtitulo')}</p>
+    <div className="mx-auto flex max-w-3xl flex-col gap-10">
+      <header className="grid gap-4 border-b border-borde pb-8 sm:grid-cols-[1fr_auto] sm:items-end">
+        <div className="flex flex-col gap-3">
+          <p className="rotulo uppercase text-tinta-3">{t('misReservas.entrada')}</p>
+          <h1 className="font-display text-5xl font-semibold tracking-[-0.03em] text-tinta sm:text-6xl">{t('misReservas.titulo')}</h1>
+          <p className="max-w-[44ch] text-tinta-2">{t('misReservas.subtitulo')}</p>
+        </div>
+        {!cargando && reservas.length > 0 && (
+          <p aria-hidden="true" className="cifra text-5xl leading-none text-acento sm:text-6xl">{String(confirmadas).padStart(2, '0')}</p>
+        )}
       </header>
       {error && <Aviso tipo="error">{error}</Aviso>}
       {cargando ? (
         <>
           <Cargando que={t('misReservas.cargando')} />
-          <div className="flex flex-col gap-3" aria-hidden="true">{[0, 1, 2].map((i) => <Esqueleto key={i} className="h-24 rounded-tarjeta" />)}</div>
+          <div className="flex flex-col gap-3" aria-hidden="true">{[0, 1, 2].map((i) => <Esqueleto key={i} className="h-28 rounded-tarjeta" />)}</div>
         </>
       ) : reservas.length === 0 ? (
         <Vacio Icono={CalendarBlank} titulo={t('misReservas.vacioTitulo')} accion={<Link to="/" className={estilosBoton('primario', 'sm')}>{t('misReservas.verPistas')}</Link>}>

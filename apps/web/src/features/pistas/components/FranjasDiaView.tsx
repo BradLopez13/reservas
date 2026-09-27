@@ -36,6 +36,8 @@ const atajos = (locale: string, hoy: string, manana: string) => Array.from({ len
 
 const estadoDe = (f: FranjaVista, ahora: Date): EstadoFranja => (!f.libre ? 'ocupada' : f.inicio <= ahora ? 'pasada' : 'libre');
 
+const TABLON = 'tablon grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4';
+
 export function FranjasDiaView({ pista, estado, fecha, minFecha, franjas, cargando, onCambiarFecha, onElegir, confirmacion }: FranjasDiaViewProps) {
   const { t, plural, idioma, nombreDeporte } = useT();
   const ahora = new Date();
@@ -60,29 +62,29 @@ export function FranjasDiaView({ pista, estado, fecha, minFecha, franjas, cargan
   const libres = franjas.filter((f) => estadoDe(f, ahora) === 'libre').length;
   const foto = pista ? fotoDePista(pista.deporte, 0) : null;
   return (
-    <div className="flex flex-col gap-10">
-      {/* Cabecera: la foto de la pista dentro de una bandeja con bisel. */}
-      <header className="bisel">
-        <div className="relative overflow-hidden bg-pista">
-          {foto && <img src={foto.src} alt="" className="absolute inset-0 size-full object-cover opacity-40 saturate-[0.85]" />}
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-pista via-pista/80 to-pista/20" />
-          <LineasPista className="opacity-[0.12]" />
-          <div className="relative flex min-h-[320px] flex-col justify-between gap-10 p-6 sm:p-10">
-            <Link to="/" className="inline-flex items-center gap-1.5 self-start text-sm text-tinta-2 transition-colors hover:text-tinta">
-              <ArrowLeft size={16} weight="light" aria-hidden="true" />{t('pista.todasLasPistas')}
-            </Link>
-            <div className="flex flex-col gap-3">
-              <p className="text-sm font-medium text-acento">{pista ? nombreDeporte(pista.deporte) : <span className="sr-only">{t('pista.generico')}</span>}</p>
-              {pista ? (
-                <h1 className="font-display text-6xl font-bold leading-none tracking-[-0.035em] text-tinta sm:text-7xl">{pista.nombre}</h1>
-              ) : (
-                <Esqueleto className="h-14 w-64" />
-              )}
-              {pista && (
-                <p className="text-base tabular-nums text-tinta-2">{t('pista.horarioLargo', { apertura: pista.apertura, cierre: pista.cierre, duracion: pista.duracionMin })}</p>
-              )}
-            </div>
+    <div className="flex flex-col gap-12">
+      {/* Cabecera partida: el nombre a la izquierda, enorme; la foto a la derecha con la esquina grande. */}
+      <header className="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <div className="flex flex-col gap-6 lg:col-span-7">
+          <Link to="/" className="inline-flex items-center gap-1.5 self-start text-sm text-tinta-2 transition-colors hover:text-tinta">
+            <ArrowLeft size={16} weight="light" aria-hidden="true" />{t('pista.todasLasPistas')}
+          </Link>
+          <div className="flex flex-col gap-4">
+            <p className="rotulo uppercase text-acento">{pista ? nombreDeporte(pista.deporte) : <span className="sr-only">{t('pista.generico')}</span>}</p>
+            {pista ? (
+              <h1 className="font-display text-6xl font-bold leading-[0.92] tracking-[-0.04em] text-tinta sm:text-7xl lg:text-8xl">{pista.nombre}</h1>
+            ) : (
+              <Esqueleto className="h-16 w-72" />
+            )}
+            {pista && (
+              <p className="cifra text-base text-tinta-2">{t('pista.horarioLargo', { apertura: pista.apertura, cierre: pista.cierre, duracion: pista.duracionMin })}</p>
+            )}
           </div>
+        </div>
+        <div className="relative overflow-hidden rounded-[var(--radius-ui)_var(--radius-esquina)_var(--radius-ui)_var(--radius-esquina)] bg-pista lg:col-span-5">
+          {foto && <img src={foto.src} alt="" className="aspect-[16/9] w-full object-cover opacity-70 saturate-[0.85] lg:aspect-[5/4]" />}
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-pista-2/70 to-transparent" />
+          <LineasPista className="opacity-[0.16]" />
         </div>
       </header>
 
@@ -98,15 +100,15 @@ export function FranjasDiaView({ pista, estado, fecha, minFecha, franjas, cargan
               clave: a.fecha,
               contenido: (
                 <>
-                  <span className="text-[11px] font-medium capitalize">{a.semana}</span>
-                  <span className="font-display text-2xl font-semibold leading-none tabular-nums">{a.numero}</span>
+                  <span className="rotulo capitalize">{a.semana}</span>
+                  <span className="cifra text-2xl leading-none">{a.numero}</span>
                 </>
               ),
             }))}
-            className="tira -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 pr-16 [mask-image:linear-gradient(to_right,transparent,black_1rem,black_calc(100%-4rem),transparent)] sm:mx-0 sm:pl-0 sm:pr-24 sm:[mask-image:linear-gradient(to_right,transparent,black_1rem,black_calc(100%-6rem),transparent)]"
+            className="tira -mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 pr-16 [mask-image:linear-gradient(to_right,transparent,black_1rem,black_calc(100%-4rem),transparent)] sm:mx-0 sm:pl-0 sm:pr-24 sm:[mask-image:linear-gradient(to_right,transparent,black_1rem,black_calc(100%-6rem),transparent)]"
             claseOpcion={(activa) =>
-              `flex w-[72px] shrink-0 flex-col items-center gap-1 rounded-[1.25rem] border py-3 transition-[background-color,border-color,color,transform] duration-500 ease-suave active:scale-[0.98] ${
-                activa ? 'border-acento bg-acento text-sobre-acento' : 'border-borde bg-superficie text-tinta-2 hover:border-borde-fuerte hover:text-tinta'
+              `flex w-[72px] shrink-0 flex-col items-center gap-1.5 rounded-ui border py-3 transition-[background-color,border-color,color,transform] duration-500 ease-suave active:scale-[0.98] ${
+                activa ? 'border-acento bg-acento text-sobre-acento' : 'border-borde bg-superficie/50 text-tinta-2 hover:border-borde-fuerte hover:text-tinta'
               }`}
           />
           {/* En móvil, una flecha discreta dice que la tira sigue; en escritorio, botones. */}
@@ -123,24 +125,28 @@ export function FranjasDiaView({ pista, estado, fecha, minFecha, franjas, cargan
         </div>
       </div>
 
+      {/* El tablón horario: celdas sin huecos separadas por líneas, como un panel de salidas. */}
       <section className="flex flex-col gap-5">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-tinta capitalize">{diaCorto(new Date(`${fecha}T12:00:00`))}</h2>
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-borde pb-4">
+          <div className="flex flex-col gap-1.5">
+            <p className="rotulo uppercase text-tinta-3">{t('pista.tablon')}</p>
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-tinta capitalize">{diaCorto(new Date(`${fecha}T12:00:00`))}</h2>
+          </div>
           {!cargando && franjas.length > 0 && (
             libres === 0 ? (
               <Boton variante="secundario" tamano="sm" onClick={() => onCambiarFecha(sumarDias(fecha, 1))}>
                 {t('pista.sinHorasLibres')}<ArrowRight size={14} weight="bold" aria-hidden="true" />
               </Boton>
             ) : (
-              <p className="text-sm text-tinta-2">{plural('pista.horasLibres', libres)}</p>
+              <p className="cifra text-sm text-acento">{plural('pista.horasLibres', libres)}</p>
             )
           )}
         </div>
         {cargando ? (
           <>
             <Cargando que={t('pista.cargandoFranjas')} />
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" aria-hidden="true">
-              {Array.from({ length: 8 }, (_, i) => <Esqueleto key={i} className="h-[62px]" />)}
+            <div className={TABLON} aria-hidden="true">
+              {Array.from({ length: 8 }, (_, i) => <div key={i} className="p-4"><Esqueleto className="h-14" /></div>)}
             </div>
           </>
         ) : franjas.length === 0 ? (
@@ -149,7 +155,7 @@ export function FranjasDiaView({ pista, estado, fecha, minFecha, franjas, cargan
           </Vacio>
         ) : (
           <AnimatedList
-            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+            className={TABLON}
             items={franjas}
             keyOf={(f) => f.inicio.toISOString()}
             render={(f) => <FranjaItem franja={f} estado={estadoDe(f, ahora)} onElegir={onElegir} />}

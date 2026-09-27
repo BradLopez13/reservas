@@ -1,14 +1,21 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 @import "@fontsource-variable/bricolage-grotesque";
 
 /*
   Un solo tema: la pista. Verde profundo de fondo, lima de la bola como único
   acento y blanco de línea para el texto. Las utilidades de Tailwind
   (bg-fondo, text-tinta…) apuntan a estas variables.
+
+  El lenguaje visual es el del marcador y la entrada: todas las horas, fechas y
+  cifras van en monoespaciada; las franjas forman un tablón sin huecos; las
+  reservas son entradas troqueladas; y una sección de la portada se invierte
+  a lima con el verde encima, la segunda variante del kit de marca.
 */
 @theme {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-display: "Bricolage Grotesque Variable", "Geist Variable", ui-sans-serif, system-ui, sans-serif;
 
   /* Del kit de marca: verde bosque #002E1F, lima, blanco cálido y gris. */
@@ -33,6 +40,7 @@
   --color-lima: oklch(91% 0.19 118);
   --color-lima-fuerte: oklch(95% 0.17 118);
   --color-sobre-lima: oklch(20% 0.05 150);
+  --color-sobre-lima-2: oklch(20% 0.05 150 / 0.68);
   --color-linea: oklch(97% 0.01 120);
   --color-linea-2: oklch(80% 0.03 150);
 
@@ -43,13 +51,28 @@
   --color-info: oklch(85% 0.08 245);
   --color-info-suave: oklch(85% 0.08 245 / 0.14);
 
-  --radius-ui: 12px;
-  --radius-tarjeta: 2rem;
+  /* Formas: controles a 10px, paneles a 1.5rem y una esquina grande de 3.5rem
+     que solo llevan las fotos y los paneles protagonistas. */
+  --radius-ui: 10px;
+  --radius-tarjeta: 1.5rem;
+  --radius-esquina: 3.5rem;
 
   --shadow-tarjeta: 0 30px 80px -30px oklch(0% 0 0 / 0.6);
   --shadow-flotante: 0 40px 100px -30px oklch(0% 0 0 / 0.8);
 
   --ease-suave: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-marquesina: marquesina 42s linear infinite;
+  --animate-latido: latido 2.4s ease-in-out infinite;
+
+  @keyframes marquesina {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes latido {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.72); opacity: 0.55; }
+  }
 }
 
 @layer base {
@@ -64,6 +87,8 @@
   ::selection { background-color: var(--color-acento); color: var(--color-sobre-acento); }
   :focus-visible { outline: 2px solid var(--color-acento); outline-offset: 3px; border-radius: 6px; }
   img { color: var(--color-tinta-3); }
+  /* Dentro de un panel lima el anillo de foco lima sería invisible. */
+  .lima :focus-visible { outline-color: var(--color-sobre-lima); }
 }
 
 @layer components {
@@ -76,7 +101,7 @@
   .texto a { color: var(--color-acento); text-decoration: underline; text-underline-offset: 3px; }
   .texto ul { padding-left: 1.25rem; list-style: disc; }
   .texto li + li { margin-top: 0.4rem; }
-  .texto code { font-size: 0.9em; background: var(--color-superficie-2); padding: 0.1em 0.4em; border-radius: 6px; color: var(--color-tinta); }
+  .texto code { font-family: var(--font-mono); font-size: 0.85em; background: var(--color-superficie-2); padding: 0.1em 0.4em; border-radius: 6px; color: var(--color-tinta); }
 
   /* Tira horizontal con encaje por elemento y sin barra de scroll visible. */
   .tira { scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -86,6 +111,48 @@
   /* Doble bisel: una bandeja con borde fino y, dentro, el contenido con su propio radio concéntrico. */
   .bisel { border-radius: var(--radius-tarjeta); padding: 0.375rem; background: oklch(100% 0 0 / 0.04); box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0.08); }
   .bisel > * { border-radius: calc(var(--radius-tarjeta) - 0.375rem); }
+
+  /* Rótulo de marcador: monoespaciada pequeña, versalitas por espaciado. */
+  .rotulo { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; font-variant-numeric: tabular-nums; }
+
+  /* Cifras de marcador: monoespaciada con dígitos tabulares. */
+  .cifra { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+  /* Tramado diagonal: la zona fuera de juego. Lo llevan las franjas ocupadas y pasadas. */
+  .tramado {
+    background-image: repeating-linear-gradient(-45deg, transparent 0 6px, oklch(100% 0 0 / 0.045) 6px 7px);
+  }
+
+  /* Tablón: una rejilla sin huecos donde las líneas son el fondo que asoma entre las celdas. */
+  .tablon { gap: 1px; background-color: var(--color-borde); border: 1px solid var(--color-borde); border-radius: var(--radius-tarjeta); overflow: hidden; }
+  .tablon > * { background-color: var(--color-fondo); }
+
+  /* Entrada troquelada: la línea de corte con sus dos muescas, hecha con una máscara. */
+  .entrada {
+    --muesca: 0.7rem;
+    --corte: 7.5rem;
+    border-radius: var(--radius-tarjeta);
+    mask:
+      radial-gradient(circle at var(--corte) 0, transparent var(--muesca), black calc(var(--muesca) + 0.5px)),
+      radial-gradient(circle at var(--corte) 100%, transparent var(--muesca), black calc(var(--muesca) + 0.5px));
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+  .entrada::before {
+    content: "";
+    position: absolute;
+    top: var(--muesca);
+    bottom: var(--muesca);
+    left: var(--corte);
+    border-left: 1px dashed var(--color-borde-fuerte);
+    pointer-events: none;
+  }
+
+  /* Sello sobre una entrada cancelada. */
+  .sello { transform: rotate(-8deg); border: 2px solid currentColor; letter-spacing: 0.16em; text-transform: uppercase; }
+
+  /* Marca gigante del pie, solo contorno. */
+  .contorno { -webkit-text-stroke: 1px oklch(100% 0 0 / 0.16); color: transparent; }
 }
 
 @media (prefers-reduced-motion: reduce) {

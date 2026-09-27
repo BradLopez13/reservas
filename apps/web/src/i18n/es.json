@@ -28,7 +28,9 @@
     "privacidad": "Privacidad",
     "codigo": "Código",
     "repositorio": "Repositorio en GitHub",
-    "fotos": "Fotos de Unsplash"
+    "fotos": "Fotos de Unsplash",
+    "horaMadrid": "Hora en Madrid",
+    "tablon": "Tablón"
   },
   "deportes": {
     "filtro": "Deporte",
@@ -51,7 +53,12 @@
     "bandaTitulo": "Tu primera reserva, en un minuto.",
     "bandaTexto": "Sin pagos ni cuotas. Solo hace falta una cuenta.",
     "bandaTituloSesion": "Mismas pistas, más partidos.",
-    "bandaTextoSesion": "Todas tus reservas, en un sitio. Cancela hasta dos horas antes."
+    "bandaTextoSesion": "Todas tus reservas, en un sitio. Cancela hasta dos horas antes.",
+    "eyebrow": "Madrid · hora local",
+    "proximaLibre": "Próxima hora libre",
+    "tablonVacio": "Sin pistas",
+    "carreraRotulo": "La carrera de cincuenta",
+    "pistasRotulo": { "one": "1 pista abierta", "other": "{n} pistas abiertas" }
   },
   "pista": {
     "generico": "Pista",
@@ -82,7 +89,9 @@
     "libre": "Libre",
     "ocupada": "Ocupada",
     "pasada": "Pasada",
-    "motivoLogin": "Inicia sesión para reservar {pista} ({dia}, {hora})."
+    "motivoLogin": "Inicia sesión para reservar {pista} ({dia}, {hora}).",
+    "tablon": "Tablón horario",
+    "franjas": "Franjas"
   },
   "confirmar": {
     "titulo": "Confirmar reserva",
@@ -110,7 +119,9 @@
     "cancelada": "cancelada",
     "confirmada": "confirmada",
     "cancelar": "Cancelar",
-    "errorCancelar": "No se ha podido cancelar: solo se puede hasta 2 horas antes."
+    "errorCancelar": "No se ha podido cancelar: solo se puede hasta 2 horas antes.",
+    "entrada": "Entrada",
+    "numero": "N.º"
   },
   "auth": {
     "entrar": "Entrar",

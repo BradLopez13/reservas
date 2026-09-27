@@ -8,7 +8,7 @@ export function PrivacidadScreen() {
   const { t, d } = useT();
   useTitulo(t('privacidad.pestana'));
   return (
-    <Pagina titulo={t('privacidad.titulo')} entradilla={t('privacidad.entradilla')}>
+    <Pagina rotulo={t('nav.informacion')} titulo={t('privacidad.titulo')} entradilla={t('privacidad.entradilla')}>
       <div className="texto">
         <h2>{t('privacidad.queSeGuarda')}</h2>
         <ul>

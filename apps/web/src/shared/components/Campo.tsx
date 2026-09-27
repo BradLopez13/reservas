@@ -28,7 +28,7 @@ export function Campo({ etiqueta, ayuda, error, type, className = '', ...props }
           aria-invalid={error ? true : undefined}
           className={`h-11 w-full rounded-ui border bg-superficie px-3.5 text-base text-tinta transition-[border-color,box-shadow] duration-200 placeholder:text-tinta-3 focus:shadow-[0_0_0_4px_var(--color-acento-suave)] focus:outline-none ${
             error ? 'border-error focus:border-error' : 'border-borde-fuerte focus:border-acento'
-          } ${esPassword ? 'pr-12' : ''}`}
+          } ${esPassword ? 'pr-12' : ''} ${type === 'date' ? 'cifra' : ''}`}
         />
         {esPassword && (
           <button

@@ -28,7 +28,9 @@
     "privacidad": "Privacy",
     "codigo": "Code",
     "repositorio": "Repository on GitHub",
-    "fotos": "Photos from Unsplash"
+    "fotos": "Photos from Unsplash",
+    "horaMadrid": "Time in Madrid",
+    "tablon": "Board"
   },
   "deportes": {
     "filtro": "Sport",
@@ -51,7 +53,12 @@
     "bandaTitulo": "Your first booking, in a minute.",
     "bandaTexto": "No payments and no fees. All you need is an account.",
     "bandaTituloSesion": "Same courts, more matches.",
-    "bandaTextoSesion": "All your bookings in one place. Cancel up to two hours before."
+    "bandaTextoSesion": "All your bookings in one place. Cancel up to two hours before.",
+    "eyebrow": "Madrid · local time",
+    "proximaLibre": "Next free hour",
+    "tablonVacio": "No courts",
+    "carreraRotulo": "The race of fifty",
+    "pistasRotulo": { "one": "1 court open", "other": "{n} courts open" }
   },
   "pista": {
     "generico": "Court",
@@ -82,7 +89,9 @@
     "libre": "Free",
     "ocupada": "Taken",
     "pasada": "Past",
-    "motivoLogin": "Sign in to book {pista} ({dia}, {hora})."
+    "motivoLogin": "Sign in to book {pista} ({dia}, {hora}).",
+    "tablon": "Timetable",
+    "franjas": "Slots"
   },
   "confirmar": {
     "titulo": "Confirm booking",
@@ -110,7 +119,9 @@
     "cancelada": "cancelled",
     "confirmada": "confirmed",
     "cancelar": "Cancel",
-    "errorCancelar": "Could not cancel: it is only possible up to 2 hours before."
+    "errorCancelar": "Could not cancel: it is only possible up to 2 hours before.",
+    "entrada": "Ticket",
+    "numero": "No."
   },
   "auth": {
     "entrar": "Sign in",

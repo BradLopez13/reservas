@@ -16,3 +16,7 @@ export const fechaLocal = (d: Date) => d.toLocaleDateString('sv-SE', { timeZone:
 export const hoy = () => fechaLocal(new Date());
 
 export const rangoHoras = (inicio: Date, fin: Date) => `${hora(inicio)}–${hora(fin)}`;
+
+// Piezas sueltas de una fecha para las entradas: el día en número y el mes corto.
+export const diaNumero = (d: Date) => d.toLocaleDateString(locale(), { timeZone: ZONA, day: '2-digit' });
+export const mesCorto = (d: Date) => d.toLocaleDateString(locale(), { timeZone: ZONA, month: 'short' }).replace('.', '');
