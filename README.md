@@ -132,6 +132,8 @@ Requiere Node 24, pnpm y Docker.
 
 ## Despliegue
 
+Vercel compila la API con su propio TypeScript (sin `strict`, lib ES2020). `apps/api/tsconfig.vercel.json` imita esa configuración y `pnpm typecheck` la ejecuta además de la estricta, así que lo que pasa la CI despliega.
+
 Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web reescribe `/api/*` al proyecto de la API, así que el navegador ve un solo origen y la cookie funciona igual que en local. La base de datos es PostgreSQL en Supabase (plan gratuito), a través de su pooler en modo transacción; por eso el cliente usa `prepare: false`. Supabase pausa el proyecto tras una semana sin actividad y hay que reanudarlo desde su panel.
 
 ## Créditos
