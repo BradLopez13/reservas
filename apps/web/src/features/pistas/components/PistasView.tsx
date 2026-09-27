@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowRight, MagnifyingGlass } from '@phosphor-icons/react';
 import { Link } from 'react-router';
-import type { Deporte, Pista } from '@reservas/contracts';
+import type { Deporte } from '@reservas/contracts';
 import { estilosBoton, IconoBoton } from '../../../shared/components/Boton.tsx';
 import { Cargando, Esqueleto } from '../../../shared/components/Esqueleto.tsx';
 import { ImagenEscala } from '../../../shared/components/ImagenEscala.tsx';
@@ -11,20 +11,22 @@ import { FOTO_CARRERA, FOTO_PORTADA_ANCHA } from '../../../shared/fotos.ts';
 import { BlurText } from '../../../shared/react-bits/BlurText.tsx';
 import { CountUp } from '../../../shared/react-bits/CountUp.tsx';
 import { Magnet } from '../../../shared/react-bits/Magnet.tsx';
+import type { PistaVista } from '../hooks/usePistas.ts';
 import { FiltroDeporte } from './FiltroDeporte.tsx';
 import { PistaCard } from './PistaCard.tsx';
 
 export interface PistasViewProps {
   deporte: Deporte | undefined;
   filtros: { valor: Deporte | undefined; texto: string }[];
-  pistas: Pista[];
+  pistas: PistaVista[];
   cargando: boolean;
   conSesion: boolean;
   onFiltrar: (d: Deporte | undefined) => void;
 }
 
-// Bento de 12 columnas sin huecos: un patrón por número de pistas.
-// 5 → [8×2, 4, 4, 6, 6]: fila 1 = 8+4, fila 2 = 8 (sigue) + 4, fila 3 = 6+6.
+// Bento de 12 columnas sin huecos. Cada bloque de cinco pistas cierra tres
+// filas exactas ([8×2, 4, 4, 6, 6]: 8+4, 8 (sigue)+4, 6+6) y el resto, de
+// una a cuatro pistas, usa su propio patrón cerrado.
 const PATRONES: Record<number, string[]> = {
   1: ['md:col-span-12 md:row-span-2'],
   2: ['md:col-span-7 md:row-span-2', 'md:col-span-5 md:row-span-2'],
@@ -32,7 +34,11 @@ const PATRONES: Record<number, string[]> = {
   4: ['md:col-span-8 md:row-span-2', 'md:col-span-4', 'md:col-span-4', 'md:col-span-12'],
   5: ['md:col-span-8 md:row-span-2', 'md:col-span-4', 'md:col-span-4', 'md:col-span-6', 'md:col-span-6'],
 };
-export const claseCelda = (i: number, n: number) => (PATRONES[Math.min(n, 5)] ?? PATRONES[5]!)[i % 5] ?? 'md:col-span-6';
+export function claseCelda(i: number, n: number) {
+  const resto = n % 5;
+  const inicioResto = n - resto;
+  return i < inicioResto ? PATRONES[5]![i % 5]! : PATRONES[resto]![i - inicioResto]!;
+}
 
 export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFiltrar }: PistasViewProps) {
   return (
@@ -44,12 +50,16 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-fondo to-transparent" />
         <LineasPista className="opacity-[0.16]" />
         <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center gap-8 text-center">
-          <BlurText
-            text="Tu pista, a la hora que quieras."
-            className="justify-center font-display text-[clamp(3rem,7.2vw,6.25rem)] font-bold leading-[0.95] tracking-[-0.035em] text-tinta"
-          />
+          {/* El titular animado es decorativo; el h1 real es el que leen los lectores de pantalla. */}
+          <h1 className="sr-only">Tu próximo partido empieza aquí</h1>
+          <div aria-hidden="true">
+            <BlurText
+              text="Tu próximo partido empieza aquí."
+              className="justify-center font-display text-[clamp(3rem,7.2vw,6.25rem)] font-bold leading-[0.95] tracking-[-0.035em] text-tinta"
+            />
+          </div>
           <p className="max-w-[44ch] text-lg leading-relaxed text-tinta-2 sm:text-xl">
-            Pádel, tenis y fútbol en Madrid. Elige el día, mira las franjas libres y reserva en dos clics.
+            Pádel, tenis y fútbol en Madrid. Elige el día, mira las horas libres y reserva en dos clics.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Magnet>
@@ -81,7 +91,7 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
           <ul className="grid grid-flow-dense grid-cols-1 gap-4 md:auto-rows-[220px] md:grid-cols-12">
             {pistas.map((p, i) => (
               <li key={p.id} className={`h-72 md:h-auto ${claseCelda(i, pistas.length)}`}>
-                <PistaCard pista={p} indice={i} grande={i === 0 && pistas.length !== 4} />
+                <PistaCard pista={p} indice={i} grande={claseCelda(i, pistas.length).includes('row-span-2')} />
               </li>
             ))}
           </ul>
@@ -114,7 +124,7 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
             <LineasPista className="opacity-[0.09]" />
             <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-8">
               <h2 className="font-display text-4xl font-bold leading-[0.98] tracking-[-0.03em] text-tinta sm:text-6xl">
-                {conSesion ? 'Tu próxima hora te espera.' : 'Tu primera reserva, en un minuto.'}
+                {conSesion ? 'Mismas pistas, más partidos.' : 'Tu primera reserva, en un minuto.'}
               </h2>
               <p className="max-w-[40ch] text-lg text-tinta-2">
                 {conSesion ? 'Todas tus reservas, en un sitio. Cancela hasta dos horas antes.' : 'Sin pagos ni cuotas: una cuenta, una pista y una hora.'}

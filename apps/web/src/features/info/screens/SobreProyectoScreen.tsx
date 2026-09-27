@@ -1,4 +1,5 @@
 import { GithubLogo } from '@phosphor-icons/react';
+import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { estilosBoton } from '../../../shared/components/Boton.tsx';
 import { REPO_URL } from '../../../shared/components/Layout.tsx';
 import { Pagina } from '../../../shared/components/Pagina.tsx';
@@ -14,6 +15,7 @@ const DEMUESTRA = [
 const STACK = ['TypeScript', 'Fastify', 'PostgreSQL', 'Drizzle', 'React 19', 'TanStack Query', 'Zod', 'Vite', 'Tailwind v4', 'Vitest', 'Playwright', 'Vercel', 'Supabase'];
 
 export function SobreProyectoScreen() {
+  useTitulo('Sobre el proyecto');
   return (
     <Pagina titulo="Sobre el proyecto" entradilla="Una app de reservas construida para responder a una pregunta concreta: qué pasa cuando cincuenta personas pulsan Reservar a la vez sobre la última hora libre.">
       <section className="flex flex-col gap-4">

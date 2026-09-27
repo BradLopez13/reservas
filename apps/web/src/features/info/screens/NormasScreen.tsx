@@ -1,4 +1,5 @@
 import { CalendarCheck, Clock, Prohibit, ShieldCheck, XCircle } from '@phosphor-icons/react';
+import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import type { Icon } from '@phosphor-icons/react';
 import { Pagina } from '../../../shared/components/Pagina.tsx';
 import { FOTO_NORMAS } from '../../../shared/fotos.ts';
@@ -13,6 +14,7 @@ const NORMAS: { Icono: Icon; titulo: string; texto: string }[] = [
 ];
 
 export function NormasScreen() {
+  useTitulo('Normas de reserva');
   return (
     <Pagina titulo="Normas de reserva" entradilla="Pocas y claras. Lo que puedes hacer con una reserva y hasta cuándo." foto={FOTO_NORMAS}>
       <ul className="grid gap-4 sm:grid-cols-2">

@@ -1,5 +1,6 @@
 import type { CambiarPassword } from '@reservas/contracts';
 import { useFormulario } from '../../../shared/hooks/useFormulario.ts';
+import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { useCambiarPassword, useCerrarSesiones } from '../mutations/useAuthMutations.ts';
 import { useSesion } from '../providers/SesionProvider.tsx';
 
@@ -8,6 +9,7 @@ export const mensajeErrorPassword = () => 'La contraseña actual no es correcta 
 
 export function useAjustes() {
   const { usuario, salir } = useSesion();
+  useTitulo('Ajustes');
   const cambiar = useCambiarPassword();
   const cerrarTodas = useCerrarSesiones(salir);
   const form = useFormulario({

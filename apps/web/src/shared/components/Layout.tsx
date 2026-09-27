@@ -1,9 +1,10 @@
 import { GithubLogo, SignOut, UserCircle } from '@phosphor-icons/react';
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { useSesion } from '../../features/auth/providers/SesionProvider.tsx';
 import { useReducedMotion } from '../hooks/useReducedMotion.ts';
+import { useRestaurarScroll } from '../hooks/useRestaurarScroll.ts';
 import { Boton, estilosBoton } from './Boton.tsx';
 import { LineasPista } from './LineasPista.tsx';
 import { Marca } from './Marca.tsx';
@@ -22,18 +23,39 @@ const enlacePie = 'text-sm text-tinta-2 transition-colors duration-500 ease-suav
 const GRANO =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
+const FOCABLES = 'a[href], button:not([disabled])';
+
 export function Layout() {
   const { usuario, salir } = useSesion();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const { pathname } = useLocation();
   const reducido = useReducedMotion();
+  const botonMenu = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  useRestaurarScroll();
 
-  // El menú móvil se cierra al cambiar de página y bloquea el scroll mientras está abierto.
+  // El menú móvil se cierra al cambiar de página.
   useEffect(() => setMenuAbierto(false), [pathname]);
+
+  // Mientras está abierto es un diálogo: bloquea el scroll, recibe el foco,
+  // se cierra con Escape y devuelve el foco al botón al cerrarse.
   useEffect(() => {
     document.body.style.overflow = menuAbierto ? 'hidden' : '';
+    if (menuAbierto) menu.current?.querySelector<HTMLElement>(FOCABLES)?.focus();
+    else if (document.activeElement && menu.current?.contains(document.activeElement)) botonMenu.current?.focus();
     return () => { document.body.style.overflow = ''; };
   }, [menuAbierto]);
+
+  const onTeclaMenu = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') { e.preventDefault(); setMenuAbierto(false); botonMenu.current?.focus(); return; }
+    if (e.key !== 'Tab' || !menu.current) return;
+    const focables = Array.from(menu.current.querySelectorAll<HTMLElement>(FOCABLES));
+    const primero = focables[0];
+    const ultimo = focables[focables.length - 1];
+    if (!primero || !ultimo) return;
+    if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
+    else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+  };
 
   const rutas = [
     { a: '/', texto: 'Pistas', fin: true },
@@ -64,14 +86,15 @@ export function Layout() {
 
       <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
         <nav aria-label="Principal" className="flex h-14 w-full max-w-4xl items-center gap-1 rounded-full border border-borde bg-fondo/70 pl-2 pr-2 shadow-tarjeta backdrop-blur-xl lg:w-max">
-          <Link to="/" className="flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-3 font-display text-lg font-semibold tracking-tight text-tinta">
-            <Marca tamano={26} />Reservas
+          <Link to="/" className="flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3 font-display text-lg font-semibold tracking-tight text-tinta">
+            <Marca tamano={26} className="text-acento" />Reservas
           </Link>
-          <div className="hidden items-center gap-0.5 lg:flex">
+          <div className="hidden items-center gap-0.5 lg:flex" inert={menuAbierto || undefined}>
             {rutas.map((r) => <NavLink key={r.a} to={r.a} end={r.fin} className={enlaceNav}>{r.texto}</NavLink>)}
           </div>
           <div className="ml-auto hidden items-center gap-1 lg:flex lg:pl-4">{enlacesSesion}</div>
           <button
+            ref={botonMenu}
             type="button"
             onClick={() => setMenuAbierto((v) => !v)}
             aria-expanded={menuAbierto}
@@ -86,7 +109,15 @@ export function Layout() {
       </header>
 
       {menuAbierto && (
-        <div id="menu-movil" className="fixed inset-0 z-40 flex flex-col justify-end bg-fondo/85 px-6 pb-12 pt-24 backdrop-blur-3xl lg:hidden">
+        <div
+          id="menu-movil"
+          ref={menu}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú"
+          onKeyDown={onTeclaMenu}
+          className="fixed inset-0 z-40 flex flex-col justify-end bg-fondo/85 px-6 pb-12 pt-24 backdrop-blur-3xl lg:hidden"
+        >
           <nav aria-label="Menú" className="flex flex-col gap-5">
             {rutas.map((r, i) => (
               <motion.div key={r.a} initial={reducido ? false : { opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.06, duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
@@ -105,13 +136,14 @@ export function Layout() {
         </div>
       )}
 
-      <main className="flex-1 pt-24"><Outlet /></main>
+      {/* Con el menú abierto, el resto de la página queda fuera del árbol accesible y del foco. */}
+      <main className="flex-1 pt-24" inert={menuAbierto || undefined}><Outlet /></main>
 
-      <footer className="relative mt-24 overflow-hidden border-t border-borde bg-pista">
+      <footer className="relative mt-24 overflow-hidden border-t border-borde bg-pista" inert={menuAbierto || undefined}>
         <LineasPista className="opacity-[0.07]" />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-3">
-            <Link to="/" className="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight text-tinta"><Marca />Reservas</Link>
+            <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-tinta"><Marca className="text-acento" />Reservas</Link>
             <p className="max-w-[34ch] text-sm leading-relaxed text-tinta-2">
               Pistas de pádel, tenis y fútbol por franjas. Un proyecto de portfolio de Brad López con el código abierto.
             </p>

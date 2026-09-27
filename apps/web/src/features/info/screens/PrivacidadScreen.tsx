@@ -1,8 +1,10 @@
 import { REPO_URL } from '../../../shared/components/Layout.tsx';
+import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { Pagina } from '../../../shared/components/Pagina.tsx';
 
 // Página estática: no tiene view-model.
 export function PrivacidadScreen() {
+  useTitulo('Privacidad');
   return (
     <Pagina titulo="Privacidad" entradilla="Qué datos guarda esta aplicación, para qué y durante cuánto tiempo.">
       <div className="texto">

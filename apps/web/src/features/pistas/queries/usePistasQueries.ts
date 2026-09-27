@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import type { Deporte } from '@reservas/contracts';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import type { Deporte, Pista } from '@reservas/contracts';
 import { franjasDe, listarPistas } from '../api/pistas.api.ts';
 import { aFranjaVista } from '../mappers/franja.mapper.ts';
 
@@ -17,3 +17,13 @@ export const usePistasQuery = (deporte?: Deporte) =>
 
 export const useFranjasQuery = (pistaId: string, fecha: string) =>
   useQuery({ queryKey: clavesPistas.franjasDia(pistaId, fecha), queryFn: async () => (await franjasDe(pistaId, fecha)).map(aFranjaVista), enabled: pistaId !== '' });
+
+// Las franjas de un mismo día para varias pistas a la vez (la portada las usa
+// para decir cuál es la próxima hora libre de cada una). Mismas claves de caché.
+export const useFranjasDeVariasQuery = (pistas: Pista[], fecha: string) =>
+  useQueries({
+    queries: pistas.map((p) => ({
+      queryKey: clavesPistas.franjasDia(p.id, fecha),
+      queryFn: async () => (await franjasDe(p.id, fecha)).map(aFranjaVista),
+    })),
+  });

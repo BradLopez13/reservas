@@ -27,14 +27,18 @@ const FOTOS_DEPORTE: Record<Deporte, Foto[]> = {
   tenis: [
     { src: unsplash('1599586120429-48281b6f0ece', 900, 675), alt: 'Zapatillas, raqueta y pelota sobre tierra batida' },
     { src: unsplash('1622163642998-1ea32b0bbc67', 900, 675), alt: 'Raqueta y pelota sobre la línea de una pista azul' },
+    { src: unsplash('1554068865-24cecd4e34b8', 900, 675), alt: 'Jugador sacando en una pista de tierra batida, vista desde arriba' },
   ],
   futbol: [
     { src: unsplash('1551958219-acbc608c6377', 900, 675), alt: 'Tres balones sobre el césped frente a una portería' },
     { src: unsplash('1574629810360-7efbbe195018', 900, 675), alt: 'Jugador conduciendo el balón sobre el césped' },
+    { src: unsplash('1575361204480-aadea25e6e68', 900, 675), alt: 'Balón sobre el césped al sol' },
+    { src: unsplash('1529900748604-07564a03e7a6', 900, 675), alt: 'Botas de fútbol en la esquina de un campo de césped artificial' },
   ],
 };
 
-// Cada pista recibe una foto de su deporte; las pistas del mismo deporte se alternan.
+// Cada pista recibe una foto de su deporte. El índice es la posición de la
+// pista en la lista, así que dos pistas seguidas del mismo deporte no repiten foto.
 export const fotoDePista = (deporte: Deporte, indice: number): Foto => {
   const fotos = FOTOS_DEPORTE[deporte];
   return fotos[indice % fotos.length]!;

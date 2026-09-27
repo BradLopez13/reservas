@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { estilosBoton } from '../../../shared/components/Boton.tsx';
 import { Pagina } from '../../../shared/components/Pagina.tsx';
 import { FOTO_COMO_FUNCIONA } from '../../../shared/fotos.ts';
@@ -19,6 +20,7 @@ const PREGUNTAS = [
 ];
 
 export function ComoFuncionaScreen() {
+  useTitulo('Cómo funciona');
   return (
     <Pagina titulo="Cómo funciona" entradilla="Reservar una pista lleva menos de un minuto. Estos son los cuatro pasos." foto={FOTO_COMO_FUNCIONA}>
       <ol className="grid gap-4 sm:grid-cols-2">

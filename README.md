@@ -97,6 +97,8 @@ Detalles que importan y que no se ven en una demo:
 - **Idempotencia** en `POST /reservas`: la cabecera `Idempotency-Key` la genera el frontend una vez por intento. Un doble clic o un reintento de red devuelven la misma reserva; la misma clave con otro cuerpo da un 422.
 - **Hora de Madrid**: las franjas se calculan en `Europe/Madrid` y se guardan en `timestamptz`. Hay un test para el último domingo de octubre.
 - **`prefers-reduced-motion`**: todas las animaciones (las de React Bits, la entrada del diálogo de confirmación y las transiciones CSS) se desactivan si el sistema lo pide.
+- **Accesibilidad**: cada pantalla pone su título en la pestaña y empieza arriba del todo (volver a la lista de pistas recupera el scroll); el menú móvil es un diálogo con foco atrapado, Escape y el resto de la página inerte; los filtros y los días son grupos de radio con flechas; las franjas ocupadas se distinguen por icono y borde, no solo por color; un id de pista inválido da «esta pista no existe» y un fallo de red, su propio aviso.
+- **Sesión pedida a tiempo**: elegir una hora sin sesión lleva al login explicando qué se iba a reservar y, al entrar (o al crear la cuenta), vuelve a esa pista, ese día y esa franja con la confirmación abierta.
 - **Un solo tema, el de la pista**: verde profundo de fondo y lima de la bola como único acento, definidos como tokens semánticos en `index.css`. Las dos animaciones ligadas al scroll de la portada usan GSAP con ScrollTrigger y también se apagan con `prefers-reduced-motion`.
 
 ## Ejecutar en local
@@ -113,12 +115,15 @@ En modo desarrollo, con recarga en caliente:
 docker compose -f infra/docker-compose.dev.yml up -d     # solo PostgreSQL
 cp apps/api/.env.example apps/api/.env                   # y pon COOKIE_SECURE=false, APP_ORIGIN=http://localhost:5173
 pnpm --filter @reservas/api db:migrate
-pnpm --filter @reservas/api db:seed
+pnpm --filter @reservas/api db:seed                     # las cinco pistas básicas
+pnpm --filter @reservas/api db:seed:demo                # opcional: nueve pistas, doce cuentas y unas mil reservas
 pnpm --filter @reservas/api dev                          # API en :3000
 pnpm --filter @reservas/web dev                          # web en :5173, con proxy a /api
 ```
 
-Requiere Node 24, pnpm y Docker.
+Requiere Node 24, pnpm y Docker. Los scripts leen las variables del entorno, no del fichero: exporta `.env` antes (`set -a; . apps/api/.env; set +a`) o pásalas en la línea de comandos.
+
+El seed de demostración es determinista y se puede repetir: crea las pistas y las cuentas que falten y no toca los días que ya tienen reservas. Las doce cuentas (`lucia.ferrer@example.com`, `marcos.iglesias@example.com`…) comparten la contraseña `demo-reservas-2026`.
 
 ## Tests
 
@@ -141,4 +146,4 @@ Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web r
 
 ## Créditos
 
-`BlurText`, `ClickSpark`, `Magnet`, `GlareHover`, `CountUp` y `SpotlightCard` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original, la licencia y dónde se usa cada uno están en `apps/web/src/shared/react-bits/`. Las tipografías son [Geist](https://vercel.com/font) y [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL, servidas desde Fontsource), los iconos son de [Phosphor](https://phosphoricons.com) (MIT) y las fotografías, de [Unsplash](https://unsplash.com) (licencia Unsplash); sus URL están en `apps/web/src/shared/fotos.ts`.
+`BlurText`, `ClickSpark`, `Magnet`, `GlareHover`, `CountUp` y `SpotlightCard` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original, la licencia y dónde se usa cada uno están en `apps/web/src/shared/react-bits/`. La marca (una R geométrica con una pista y una franja reservada en el hueco) y la paleta (verde bosque `#002E1F`, lima y blanco cálido) siguen el kit de marca del proyecto; el símbolo vive en `apps/web/src/shared/components/Marca.tsx` y en `apps/web/public/favicon.svg`. Las tipografías son [Geist](https://vercel.com/font) y [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL, servidas desde Fontsource), los iconos son de [Phosphor](https://phosphoricons.com) (MIT) y las fotografías, de [Unsplash](https://unsplash.com) (licencia Unsplash); sus URL están en `apps/web/src/shared/fotos.ts`.
