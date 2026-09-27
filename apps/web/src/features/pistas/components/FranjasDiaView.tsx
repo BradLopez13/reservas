@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { AnimatedList } from '../../../shared/react-bits/AnimatedList.tsx';
-import type { FranjaVista } from '../mappers.ts';
+import type { FranjaVista } from '../mappers/franja.mapper.ts';
+import { FranjaItem } from './FranjaItem.tsx';
 
 export interface FranjasDiaViewProps {
   fecha: string; minFecha: string; franjas: FranjaVista[]; cargando: boolean;
@@ -19,12 +20,7 @@ export function FranjasDiaView({ fecha, minFecha, franjas, cargando, onCambiarFe
       <AnimatedList
         items={franjas}
         keyOf={(f) => f.inicio.toISOString()}
-        render={(f) => (
-          <button disabled={!f.libre || f.inicio <= ahora} onClick={() => onElegir(f)}
-            className="w-full rounded-lg border bg-white px-4 py-3 text-left hover:border-emerald-600 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-400">
-            {f.etiqueta} <span className="float-right text-sm">{f.libre ? 'Libre' : 'Ocupada'}</span>
-          </button>
-        )}
+        render={(f) => <FranjaItem franja={f} deshabilitada={!f.libre || f.inicio <= ahora} onElegir={onElegir} />}
       />
       {confirmacion}
     </div>

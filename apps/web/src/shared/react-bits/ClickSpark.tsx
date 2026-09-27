@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import ClickSparkBits from './ClickSpark.bits.tsx';
-import { useReducedMotion } from './reducedMotion.ts';
+import { useReducedMotion } from '../hooks/useReducedMotion.ts';
 
 // Chispas al confirmar la reserva.
 export function ClickSpark({ children }: { children: ReactNode }) {

@@ -1,4 +1,4 @@
-import { useAjustesPage } from './hooks/useAjustesPage.ts';
-import { AjustesView } from './views/AjustesView.tsx';
+import { AjustesView } from '../components/AjustesView.tsx';
+import { useAjustes } from '../hooks/useAjustes.ts';
 
-export function AjustesPage() { return <AjustesView {...useAjustesPage()} />; }
+export function AjustesScreen() { return <AjustesView {...useAjustes()} />; }

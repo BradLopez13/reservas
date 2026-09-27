@@ -1,4 +1,4 @@
-import { useMisReservasPage } from './hooks/useMisReservasPage.ts';
-import { MisReservasView } from './views/MisReservasView.tsx';
+import { MisReservasView } from '../components/MisReservasView.tsx';
+import { useMisReservas } from '../hooks/useMisReservas.ts';
 
-export function MisReservasPage() { return <MisReservasView {...useMisReservasPage()} />; }
+export function MisReservasScreen() { return <MisReservasView {...useMisReservas()} />; }

@@ -1,4 +1,4 @@
-import { SesionProvider } from './features/auth/SesionProvider.tsx';
+import { SesionProvider } from './features/auth/providers/SesionProvider.tsx';
 import { Rutas } from './rutas.tsx';
 
 export function App() {

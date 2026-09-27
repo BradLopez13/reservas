@@ -1,4 +1,4 @@
-import { useRegistroPage } from './hooks/useRegistroPage.ts';
-import { RegistroView } from './views/RegistroView.tsx';
+import { RegistroView } from '../components/RegistroView.tsx';
+import { useRegistro } from '../hooks/useRegistro.ts';
 
-export function RegistroPage() { return <RegistroView {...useRegistroPage()} />; }
+export function RegistroScreen() { return <RegistroView {...useRegistro()} />; }

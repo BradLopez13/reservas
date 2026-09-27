@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it } from 'vitest';
-import { servidor } from '../../test/servidor.ts';
-import { RutaPrivada } from './RutaPrivada.tsx';
+import { servidor } from '../../../test/servidor.ts';
+import { RutaPrivada } from '../components/RutaPrivada.tsx';
 import { SesionProvider } from './SesionProvider.tsx';
 
 const app = (ruta: string) => (

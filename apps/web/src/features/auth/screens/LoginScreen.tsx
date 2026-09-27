@@ -1,4 +1,5 @@
-import { useLoginPage } from './hooks/useLoginPage.ts';
-import { LoginView } from './views/LoginView.tsx';
+import { LoginView } from '../components/LoginView.tsx';
+import { useLogin } from '../hooks/useLogin.ts';
 
-export function LoginPage() { return <LoginView {...useLoginPage()} />; }
+// Controlador: une la lógica con la vista.
+export function LoginScreen() { return <LoginView {...useLogin()} />; }

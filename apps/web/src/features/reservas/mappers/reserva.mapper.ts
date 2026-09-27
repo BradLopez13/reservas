@@ -1,5 +1,5 @@
 import type { Reserva } from '@reservas/contracts';
-import { diaCorto, rangoHoras } from '../../shared/fechas.ts';
+import { diaCorto, rangoHoras } from '../../../shared/fechas.ts';
 
 export interface ReservaVista {
   id: string; pistaNombre: string; deporte: Reserva['deporte']; inicio: Date; fin: Date;

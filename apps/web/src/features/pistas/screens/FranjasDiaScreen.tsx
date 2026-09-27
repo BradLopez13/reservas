@@ -1,13 +1,13 @@
-import { ConfirmarReserva } from '../reservas/ConfirmarReserva.tsx';
-import { useFranjasDia } from './hooks/useFranjasDia.ts';
-import { FranjasDiaView } from './views/FranjasDiaView.tsx';
+import { ConfirmarReservaScreen } from '../../reservas/screens/ConfirmarReservaScreen.tsx';
+import { FranjasDiaView } from '../components/FranjasDiaView.tsx';
+import { useFranjasDia } from '../hooks/useFranjasDia.ts';
 
-export function FranjasDia() {
+export function FranjasDiaScreen() {
   const { pistaId, seleccion, onCerrarConfirmacion, ...vista } = useFranjasDia();
   return (
     <FranjasDiaView
       {...vista}
-      confirmacion={seleccion && <ConfirmarReserva pistaId={pistaId} franja={seleccion} onCerrar={onCerrarConfirmacion} />}
+      confirmacion={seleccion && <ConfirmarReservaScreen pistaId={pistaId} franja={seleccion} onCerrar={onCerrarConfirmacion} />}
     />
   );
 }

@@ -1,9 +1,12 @@
+import type { CambiarPassword } from '@reservas/contracts';
 import { useFormulario } from '../../../shared/hooks/useFormulario.ts';
-import { leerCambioPassword, mensajeErrorPassword } from '../handlers.ts';
-import { useCambiarPassword, useCerrarSesiones } from '../mutations.ts';
-import { useSesion } from '../SesionProvider.tsx';
+import { useCambiarPassword, useCerrarSesiones } from '../mutations/useAuthMutations.ts';
+import { useSesion } from '../providers/SesionProvider.tsx';
 
-export function useAjustesPage() {
+export const leerCambioPassword = (f: FormData): CambiarPassword => ({ actual: String(f.get('actual')), nueva: String(f.get('nueva')) });
+export const mensajeErrorPassword = () => 'La contraseña actual no es correcta o la nueva es demasiado corta.';
+
+export function useAjustes() {
   const { usuario, salir } = useSesion();
   const cambiar = useCambiarPassword();
   const cerrarTodas = useCerrarSesiones(salir);

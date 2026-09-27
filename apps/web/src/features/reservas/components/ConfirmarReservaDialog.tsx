@@ -1,14 +1,14 @@
 import { Aviso } from '../../../shared/components/Aviso.tsx';
 import { Boton } from '../../../shared/components/Boton.tsx';
 import { ClickSpark } from '../../../shared/react-bits/ClickSpark.tsx';
-import type { EstadoConfirmacion } from '../handlers.ts';
+import type { EstadoConfirmacion } from '../hooks/useConfirmarReserva.ts';
 
-export interface ConfirmarReservaViewProps {
+export interface ConfirmarReservaDialogProps {
   etiqueta: string; estado: EstadoConfirmacion;
   onConfirmar: () => void; onVerReservas: () => void; onCerrar: () => void;
 }
 
-export function ConfirmarReservaView({ etiqueta, estado, onConfirmar, onVerReservas, onCerrar }: ConfirmarReservaViewProps) {
+export function ConfirmarReservaDialog({ etiqueta, estado, onConfirmar, onVerReservas, onCerrar }: ConfirmarReservaDialogProps) {
   const terminado = estado === 'confirmada' || estado === 'ocupada';
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 flex items-center justify-center bg-black/40 p-4">
@@ -20,7 +20,7 @@ export function ConfirmarReservaView({ etiqueta, estado, onConfirmar, onVerReser
         <div className="flex justify-end gap-2">
           <Boton variante="secundario" onClick={onCerrar}>{terminado ? 'Cerrar' : 'Cancelar'}</Boton>
           {estado === 'confirmada' && <Boton onClick={onVerReservas}>Ver mis reservas</Boton>}
-          {(estado === 'pendiente' || estado === 'error' || estado === 'reservando') && (
+          {!terminado && (
             <ClickSpark>
               <Boton disabled={estado === 'reservando'} onClick={onConfirmar}>{estado === 'reservando' ? 'Reservando…' : 'Confirmar'}</Boton>
             </ClickSpark>

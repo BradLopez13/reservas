@@ -1,5 +1,5 @@
 import type { Franja } from '@reservas/contracts';
-import { rangoHoras } from '../../shared/fechas.ts';
+import { rangoHoras } from '../../../shared/fechas.ts';
 
 export interface FranjaVista { inicio: Date; fin: Date; libre: boolean; etiqueta: string }
 

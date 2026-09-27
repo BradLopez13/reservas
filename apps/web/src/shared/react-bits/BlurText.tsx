@@ -1,5 +1,5 @@
 import BlurTextBits from './BlurText.bits.tsx';
-import { useReducedMotion } from './reducedMotion.ts';
+import { useReducedMotion } from '../hooks/useReducedMotion.ts';
 
 export function BlurText({ text, className }: { text: string; className?: string }) {
   if (useReducedMotion()) return <h1 className={className}>{text}</h1>;

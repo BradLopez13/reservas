@@ -1,9 +1,10 @@
-import { mensajeErrorCancelar } from '../handlers.ts';
-import { useCancelarReserva } from '../mutations.ts';
-import { useMisReservas } from '../queries.ts';
+import { useCancelarReserva } from '../mutations/useReservasMutations.ts';
+import { useMisReservasQuery } from '../queries/useMisReservasQuery.ts';
 
-export function useMisReservasPage() {
-  const reservas = useMisReservas();
+export const mensajeErrorCancelar = () => 'No se ha podido cancelar: solo se puede hasta 2 horas antes.';
+
+export function useMisReservas() {
+  const reservas = useMisReservasQuery();
   const cancelar = useCancelarReserva();
   return {
     reservas: reservas.data ?? [],

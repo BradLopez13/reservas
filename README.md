@@ -56,32 +56,39 @@ En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque algui
 ## Arquitectura
 
 ```
-packages/contracts/     Esquemas Zod de lo que viaja por HTTP y códigos de error. No depende de nada.
-apps/api/src/
-  contexto.ts           Raíz de composición: qué implementación recibe cada puerto.
-  shared/               Config, errores de dominio, tiempo, base de datos y plugins HTTP transversales.
-  modules/<feature>/    Un módulo vertical por funcionalidad (auth, pistas, reservas):
-    domain/             Entidades, reglas y puertos (interfaces). Sin Fastify ni Drizzle.
-    application/        Casos de uso: reciben el contexto, abren la transacción, orquestan.
-    infra/              Repositorios, rutas y adaptadores (sesión, idempotencia).
-apps/web/src/
-  shared/               Cliente axios con interceptores, componentes base, hooks, fechas, React Bits.
-  features/<feature>/   Cada funcionalidad (auth, pistas, reservas) con la misma anatomía:
-    api.ts              servicio HTTP: llama a la API y valida la respuesta con Zod
-    mappers.ts          contrato → modelo de vista
-    queries.ts          claves de caché + hooks useQuery
-    mutations.ts        hooks useMutation, con sus invalidaciones
-    handlers.ts         funciones puras: FormData → contrato, error → mensaje (con tests)
-    hooks/useXxx.ts     la lógica de cada pantalla, que compone todo lo anterior
-    views/XxxView.tsx   presentación pura: props dentro, JSX fuera, sin hooks de datos
-    XxxPage.tsx         contenedor: llama al hook y pinta la vista
-infra/                  nginx + docker compose: la app completa como en producción.
-e2e/                    Playwright contra ese docker compose.
+packages/contracts/       Esquemas Zod de lo que viaja por HTTP y códigos de error. No depende de nada.
+
+apps/api/src/                             (hexagonal, un módulo vertical por funcionalidad)
+  contexto.ts                             raíz de composición: qué implementación recibe cada puerto
+  shared/                                 config, errores de dominio, tiempo, base de datos, plugins HTTP
+  modules/<feature>/
+    domain/                               entidades, reglas y puertos (interfaces). Sin Fastify ni Drizzle
+    application/commands/                 casos de uso que escriben (reservarPista, cancelarReserva…)
+    application/queries/                  casos de uso que leen (misReservas, consultarFranjas…)
+    infra/http/rutas.ts                   controlador: solo une ruta → handler → guard
+    infra/http/handlers/                  un handler por endpoint
+    infra/http/dto.ts                     entidad → contrato
+    infra/persistence/                    repositorios (las tres estrategias, idempotencia, sesiones…)
+
+apps/web/src/                             (MVVM: pantalla → hook → vista; carpetas solo TS o solo TSX)
+  shared/                                 api (axios + interceptores), components, hooks, fechas, react-bits
+  features/<feature>/
+    api/                        TS        un cliente por recurso de la API
+    mappers/                    TS        contrato → modelo de vista
+    queries/                    TS        claves de caché + useQuery: los datos no se piden dos veces
+    mutations/                  TS        useMutation con sus invalidaciones
+    hooks/                      TS        la lógica de cada pantalla (view-model), con sus funciones puras
+    providers/                  TSX       contextos (solo auth)
+    components/                 TSX       vistas y piezas propias de la feature
+    screens/                    TSX       controladores: <Vista {...useHook()} />
+
+infra/                    nginx + docker compose: la app completa como en producción.
+e2e/                      Playwright contra ese docker compose.
 ```
 
 Recorrido de una petición: el navegador llama a `/api/reservas` en el mismo origen → el proxy la pasa a Fastify → el decorador de idempotencia decide si ya se procesó → la ruta valida con `contracts` → el caso de uso abre la transacción → el repositorio aplica la estrategia → el mapper devuelve el contrato → el cliente web valida la respuesta con el mismo esquema y la convierte en modelo de vista.
 
-Patrones que sostienen eso: **puertos y adaptadores** (los casos de uso solo ven interfaces), **raíz de composición** (`contexto.ts` es el único sitio que conoce las implementaciones), **estrategia** (las tres formas de crear una reserva), **decorador** (la idempotencia envuelve al handler sin que la ruta sepa de ella) y **mappers** en cada frontera.
+Patrones que sostienen eso. En la API: **puertos y adaptadores** (los casos de uso solo ven interfaces), **comandos y consultas** separados, **raíz de composición** (`contexto.ts` es el único sitio que conoce las implementaciones), **estrategia** (las tres formas de crear una reserva), **decorador** (la idempotencia envuelve al handler sin que la ruta sepa de ella) y **mappers** en cada frontera. En la web no hay hexagonal, porque no hay dominio que proteger: hay **MVVM** (la pantalla es el controlador, el hook es el view-model, la vista es tonta) y una **capa de datos con caché** (queries y mutations) para no volver a pedir lo mismo.
 
 Detalles que importan y que no se ven en una demo:
 

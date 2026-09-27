@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import type { Deporte } from '@reservas/contracts';
-import { franjasDe, listarPistas } from './api.ts';
-import { aFranjaVista } from './mappers.ts';
+import { franjasDe, listarPistas } from '../api/pistas.api.ts';
+import { aFranjaVista } from '../mappers/franja.mapper.ts';
 
-// Las claves de caché viven aquí: quien invalide franjas lo hace con `clavesPistas.franjas(id)`.
+// Capa de datos: las claves de caché viven aquí, y quien invalide franjas lo hace
+// con `clavesPistas.franjas(id)`. Las pantallas no vuelven a pedir lo que ya está fresco.
 export const clavesPistas = {
   todas: ['pistas'] as const,
   lista: (deporte?: Deporte) => ['pistas', 'lista', deporte ?? 'todas'] as const,
@@ -11,8 +12,8 @@ export const clavesPistas = {
   franjasDia: (pistaId: string, fecha: string) => ['pistas', 'franjas', pistaId, fecha] as const,
 };
 
-export const usePistas = (deporte?: Deporte) =>
+export const usePistasQuery = (deporte?: Deporte) =>
   useQuery({ queryKey: clavesPistas.lista(deporte), queryFn: () => listarPistas(deporte) });
 
-export const useFranjas = (pistaId: string, fecha: string) =>
+export const useFranjasQuery = (pistaId: string, fecha: string) =>
   useQuery({ queryKey: clavesPistas.franjasDia(pistaId, fecha), queryFn: async () => (await franjasDe(pistaId, fecha)).map(aFranjaVista), enabled: pistaId !== '' });

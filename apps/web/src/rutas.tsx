@@ -1,23 +1,23 @@
 import { Route, Routes } from 'react-router';
+import { RutaPrivada } from './features/auth/components/RutaPrivada.tsx';
+import { AjustesScreen } from './features/auth/screens/AjustesScreen.tsx';
+import { LoginScreen } from './features/auth/screens/LoginScreen.tsx';
+import { RegistroScreen } from './features/auth/screens/RegistroScreen.tsx';
+import { FranjasDiaScreen } from './features/pistas/screens/FranjasDiaScreen.tsx';
+import { PistasScreen } from './features/pistas/screens/PistasScreen.tsx';
+import { MisReservasScreen } from './features/reservas/screens/MisReservasScreen.tsx';
 import { Layout } from './shared/components/Layout.tsx';
-import { AjustesPage } from './features/auth/AjustesPage.tsx';
-import { LoginPage } from './features/auth/LoginPage.tsx';
-import { RegistroPage } from './features/auth/RegistroPage.tsx';
-import { RutaPrivada } from './features/auth/RutaPrivada.tsx';
-import { FranjasDia } from './features/pistas/FranjasDia.tsx';
-import { PistasPage } from './features/pistas/PistasPage.tsx';
-import { MisReservasPage } from './features/reservas/MisReservasPage.tsx';
 
 export function Rutas() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<PistasPage />} />
-        <Route path="/pistas/:id" element={<FranjasDia />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/registro" element={<RegistroPage />} />
-        <Route path="/mis-reservas" element={<RutaPrivada><MisReservasPage /></RutaPrivada>} />
-        <Route path="/ajustes" element={<RutaPrivada><AjustesPage /></RutaPrivada>} />
+        <Route path="/" element={<PistasScreen />} />
+        <Route path="/pistas/:id" element={<FranjasDiaScreen />} />
+        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/registro" element={<RegistroScreen />} />
+        <Route path="/mis-reservas" element={<RutaPrivada><MisReservasScreen /></RutaPrivada>} />
+        <Route path="/ajustes" element={<RutaPrivada><AjustesScreen /></RutaPrivada>} />
       </Route>
     </Routes>
   );

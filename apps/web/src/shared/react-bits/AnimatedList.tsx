@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
-import { useReducedMotion } from './reducedMotion.ts';
+import { useReducedMotion } from '../hooks/useReducedMotion.ts';
 
 interface Props<T> { items: T[]; keyOf: (t: T) => string; render: (t: T) => ReactNode }
 

@@ -1,4 +1,4 @@
-import { usePistasPage } from './hooks/usePistasPage.ts';
-import { PistasView } from './views/PistasView.tsx';
+import { PistasView } from '../components/PistasView.tsx';
+import { usePistas } from '../hooks/usePistas.ts';
 
-export function PistasPage() { return <PistasView {...usePistasPage()} />; }
+export function PistasScreen() { return <PistasView {...usePistas()} />; }

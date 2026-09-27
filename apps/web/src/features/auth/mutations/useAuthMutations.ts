@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { CambiarPassword, Login, Registro } from '@reservas/contracts';
-import type { ApiError } from '../../shared/api/errores.ts';
-import { cambiarPassword, cerrarSesiones, login, registro } from './api.ts';
+import type { ApiError } from '../../../shared/api/errores.ts';
+import { cambiarPassword, cerrarSesiones, login, registro } from '../api/auth.api.ts';
 
 // Cada mutación conoce sus efectos: qué caché invalidar y qué sesión refrescar.
 

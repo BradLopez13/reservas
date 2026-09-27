@@ -1,13 +1,14 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import type { ReactNode } from 'react';
+import { createElement, type ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
-import { servidor } from '../../test/servidor.ts';
-import { useReservar } from './mutations.ts';
+import { servidor } from '../../../test/servidor.ts';
+import { useReservar } from './useReservasMutations.ts';
 
 const UUID = '0d1f7c6e-9a4b-4c1e-8f2a-3b5d7e9f1a2b';
-const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={new QueryClient()}>{children}</QueryClientProvider>;
+// Sin JSX: esta carpeta es solo TS.
+const wrapper = ({ children }: { children: ReactNode }) => createElement(QueryClientProvider, { client: new QueryClient() }, children);
 const reserva = { id: UUID, pistaId: UUID, pistaNombre: 'P', deporte: 'padel', inicio: '2026-10-25T08:00:00.000Z', fin: '2026-10-25T09:30:00.000Z', estado: 'confirmada' };
 
 describe('useReservar', () => {

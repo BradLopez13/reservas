@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
-import { useSesion } from './SesionProvider.tsx';
+import { useSesion } from '../providers/SesionProvider.tsx';
 
 export function RutaPrivada({ children }: { children: ReactNode }) {
   const { usuario, cargando } = useSesion();
