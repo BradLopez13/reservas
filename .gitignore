@@ -8,3 +8,4 @@ playwright-report/
 test-results/
 .vercel/
 docs/
+apps/api/api/index.js

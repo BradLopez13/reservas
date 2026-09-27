@@ -1,8 +1,8 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { crearApp } from '../src/app.ts';
-import { crearContexto } from '../src/contexto.ts';
-import { leerConfig } from '../src/shared/config.ts';
-import { crearDb } from '../src/shared/db/cliente.ts';
+import { crearApp } from './app.ts';
+import { crearContexto } from './contexto.ts';
+import { leerConfig } from './shared/config.ts';
+import { crearDb } from './shared/db/cliente.ts';
 
 // Adaptador para Vercel Functions: la misma app Fastify que en src/index.ts,
 // pero atendiendo las peticiones que Vercel le pasa en lugar de escuchar un puerto.
