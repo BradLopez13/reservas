@@ -2,7 +2,8 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: '.',
-  use: { baseURL: 'http://localhost:8080' },
+  // La web arranca en castellano salvo preferencia guardada; el locale del navegador solo afecta a formatos.
+  use: { baseURL: 'http://localhost:8080', locale: 'es-ES' },
   retries: 0,
   reporter: 'list',
   webServer: {

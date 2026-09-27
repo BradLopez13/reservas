@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
+import { useT } from '../../../i18n/i18n.ts';
 import type { Foto } from '../../../shared/fotos.ts';
 
 // Marco de las pantallas de entrar y crear cuenta: formulario a la izquierda,
 // fotografía a la derecha en escritorio.
 export function MarcoAcceso({ titulo, subtitulo, foto, children }: { titulo: string; subtitulo: string; foto: Foto; children: ReactNode }) {
+  const { t } = useT();
   return (
     <div className="grid items-center gap-12 lg:min-h-[70vh] lg:grid-cols-2">
       <div className="mx-auto flex w-full max-w-sm flex-col gap-8">
@@ -13,7 +15,7 @@ export function MarcoAcceso({ titulo, subtitulo, foto, children }: { titulo: str
         </header>
         {children}
       </div>
-      <img src={foto.src} alt={foto.alt} loading="lazy" className="hidden aspect-[4/5] w-full rounded-tarjeta object-cover shadow-tarjeta lg:block" />
+      <img src={foto.src} alt={t(foto.alt)} loading="lazy" className="hidden aspect-[4/5] w-full rounded-tarjeta object-cover shadow-tarjeta lg:block" />
     </div>
   );
 }

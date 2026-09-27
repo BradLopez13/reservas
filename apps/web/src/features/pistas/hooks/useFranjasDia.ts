@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { t, useT } from '../../../i18n/i18n.ts';
 import { diaCorto, hoy } from '../../../shared/fechas.ts';
 import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { useSesion } from '../../auth/providers/SesionProvider.tsx';
@@ -19,6 +20,7 @@ export function useFranjasDia() {
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const { usuario } = useSesion();
+  useT();
   const fechaParam = params.get('fecha');
   const [fecha, setFecha] = useState(() => (fechaParam && FECHA.test(fechaParam) && fechaParam >= hoy() ? fechaParam : hoy()));
   const [seleccion, setSeleccion] = useState<FranjaVista | null>(null);
@@ -43,7 +45,8 @@ export function useFranjasDia() {
   // Elegir una franja sin sesión lleva al login, explicando por qué, y vuelve aquí con la franja guardada.
   const onElegir = (f: FranjaVista) => {
     if (!usuario) {
-      navigate('/login', { state: { volverA: rutaConFranja(pistaId, fecha, f), motivo: `Inicia sesión para reservar ${pista?.nombre ?? 'la pista'} (${diaCorto(f.inicio)}, ${f.etiqueta}).` } });
+      const motivo = t('pista.motivoLogin', { pista: pista?.nombre ?? t('pista.generico'), dia: diaCorto(f.inicio), hora: f.etiqueta });
+      navigate('/login', { state: { volverA: rutaConFranja(pistaId, fecha, f), motivo } });
       return;
     }
     setSeleccion(f);

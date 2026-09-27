@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { TituloAnimado } from '../components/TituloAnimado.tsx';
 import { AnimatedList } from './AnimatedList.tsx';
-import { BlurText } from './BlurText.tsx';
 
 function simularReducedMotion(activo: boolean) {
   vi.stubGlobal('matchMedia', (q: string) => ({
@@ -11,21 +11,18 @@ function simularReducedMotion(activo: boolean) {
 }
 afterEach(() => vi.unstubAllGlobals());
 
-// jsdom no implementa IntersectionObserver, que BlurText usa para animar al entrar en pantalla.
-class ObservadorFalso { observe() {} unobserve() {} disconnect() {} }
-beforeEach(() => vi.stubGlobal('IntersectionObserver', ObservadorFalso));
-
-describe('BlurText', () => {
+describe('TituloAnimado', () => {
   it('con prefers-reduced-motion muestra el texto sin animar', () => {
     simularReducedMotion(true);
-    render(<BlurText text="Reserva tu pista" />);
-    expect(screen.getByText('Reserva tu pista')).toBeInTheDocument();
+    render(<TituloAnimado texto="Tu próximo partido empieza aquí" />);
+    expect(screen.getByText('Tu próximo partido empieza aquí')).toBeInTheDocument();
     expect(document.querySelector('[data-animado]')).toBeNull();
   });
-  it('sin la preferencia, monta la versión animada', () => {
+  it('sin la preferencia, monta la versión animada con el texto ya visible', () => {
     simularReducedMotion(false);
-    render(<BlurText text="Reserva tu pista" />);
+    render(<TituloAnimado texto="Tu próximo partido" />);
     expect(document.querySelector('[data-animado]')).not.toBeNull();
+    expect(screen.getByText('próximo')).toBeVisible();
   });
 });
 

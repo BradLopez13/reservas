@@ -1,11 +1,13 @@
+import { t, useT } from '../../../i18n/i18n.ts';
 import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { useCancelarReserva } from '../mutations/useReservasMutations.ts';
 import { useMisReservasQuery } from '../queries/useMisReservasQuery.ts';
 
-export const mensajeErrorCancelar = () => 'No se ha podido cancelar: solo se puede hasta 2 horas antes.';
+export const mensajeErrorCancelar = () => t('misReservas.errorCancelar');
 
 export function useMisReservas() {
-  useTitulo('Mis reservas');
+  useT();
+  useTitulo(t('misReservas.pestana'));
   const reservas = useMisReservasQuery();
   const cancelar = useCancelarReserva();
   return {

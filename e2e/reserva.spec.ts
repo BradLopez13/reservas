@@ -6,7 +6,7 @@ async function registrar(page: Page, nombre: string) {
   await page.getByLabel('Email').fill(`e2e-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`);
   await page.getByLabel(/Contraseña/).fill('contraseña-larga');
   await page.getByRole('button', { name: 'Crear cuenta' }).click();
-  await expect(page.getByRole('link', { name: 'Mis reservas' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Mis reservas' })).toBeVisible();
 }
 
 test('registro → reservar → aparece en mis reservas → cancelar', async ({ page }) => {

@@ -71,6 +71,7 @@ apps/api/src/                             (hexagonal, un módulo vertical por fu
     infra/persistence/                    repositorios (las tres estrategias, idempotencia, sesiones…)
 
 apps/web/src/                             (MVVM: pantalla → hook → vista; carpetas solo TS o solo TSX)
+  i18n/                                   es.json, en.json y el `t()` tipado que usan todas las pantallas
   shared/                                 api (axios + interceptores), components, hooks, fechas, fotos, react-bits
   features/<feature>/
     api/                        TS        un cliente por recurso de la API
@@ -98,6 +99,7 @@ Detalles que importan y que no se ven en una demo:
 - **Hora de Madrid**: las franjas se calculan en `Europe/Madrid` y se guardan en `timestamptz`. Hay un test para el último domingo de octubre.
 - **`prefers-reduced-motion`**: todas las animaciones (las de React Bits, la entrada del diálogo de confirmación y las transiciones CSS) se desactivan si el sistema lo pide.
 - **Accesibilidad**: cada pantalla pone su título en la pestaña y empieza arriba del todo (volver a la lista de pistas recupera el scroll); el menú móvil es un diálogo con foco atrapado, Escape y el resto de la página inerte; los filtros y los días son grupos de radio con flechas; las franjas ocupadas se distinguen por icono y borde, no solo por color; un id de pista inválido da «esta pista no existe» y un fallo de red, su propio aviso.
+- **Dos idiomas**: todos los textos de la web viven en `apps/web/src/i18n/es.json` y `en.json`; los componentes solo piden claves con `t('nav.pistas')`. Las claves están tipadas a partir del JSON en castellano, así que una clave inexistente o un texto que falte en inglés no compilan. El idioma arranca en castellano, se cambia desde la barra y se guarda en el navegador; las fechas siguen el idioma y las horas se quedan en Madrid.
 - **Sesión pedida a tiempo**: elegir una hora sin sesión lleva al login explicando qué se iba a reservar y, al entrar (o al crear la cuenta), vuelve a esa pista, ese día y esa franja con la confirmación abierta.
 - **Un solo tema, el de la pista**: verde profundo de fondo y lima de la bola como único acento, definidos como tokens semánticos en `index.css`. Las dos animaciones ligadas al scroll de la portada usan GSAP con ScrollTrigger y también se apagan con `prefers-reduced-motion`.
 
@@ -146,4 +148,4 @@ Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web r
 
 ## Créditos
 
-`BlurText`, `ClickSpark`, `Magnet`, `GlareHover`, `CountUp` y `SpotlightCard` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original, la licencia y dónde se usa cada uno están en `apps/web/src/shared/react-bits/`. La marca (una R geométrica con una pista y una franja reservada en el hueco) y la paleta (verde bosque `#002E1F`, lima y blanco cálido) siguen el kit de marca del proyecto; el símbolo vive en `apps/web/src/shared/components/Marca.tsx` y en `apps/web/public/favicon.svg`. Las tipografías son [Geist](https://vercel.com/font) y [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL, servidas desde Fontsource), los iconos son de [Phosphor](https://phosphoricons.com) (MIT) y las fotografías, de [Unsplash](https://unsplash.com) (licencia Unsplash); sus URL están en `apps/web/src/shared/fotos.ts`.
+`ClickSpark`, `Magnet`, `GlareHover`, `CountUp` y `SpotlightCard` vienen de [React Bits](https://reactbits.dev) (MIT + Commons Clause); el código original, la licencia y dónde se usa cada uno están en `apps/web/src/shared/react-bits/`. La marca (una R geométrica con una pista y una franja reservada en el hueco) y la paleta (verde bosque `#002E1F`, lima y blanco cálido) siguen el kit de marca del proyecto; el símbolo vive en `apps/web/src/shared/components/Marca.tsx` y en `apps/web/public/favicon.svg`. Las tipografías son [Geist](https://vercel.com/font) y [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL, servidas desde Fontsource), los iconos son de [Phosphor](https://phosphoricons.com) (MIT) y las fotografías, de [Unsplash](https://unsplash.com) (licencia Unsplash); sus URL están en `apps/web/src/shared/fotos.ts`.

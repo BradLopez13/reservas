@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useEffect, useId } from 'react';
+import { useT } from '../../../i18n/i18n.ts';
 import { Aviso } from '../../../shared/components/Aviso.tsx';
 import { Boton } from '../../../shared/components/Boton.tsx';
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.ts';
@@ -13,6 +14,7 @@ export interface ConfirmarReservaDialogProps {
 
 // Capas: la barra flotante va en z-50 y este diálogo por encima, en z-60.
 export function ConfirmarReservaDialog({ etiqueta, dia, pistaNombre, estado, onConfirmar, onVerReservas, onCerrar }: ConfirmarReservaDialogProps) {
+  const { t } = useT();
   const reducido = useReducedMotion();
   const idTitulo = useId();
   const terminado = estado === 'confirmada' || estado === 'ocupada';
@@ -43,25 +45,25 @@ export function ConfirmarReservaDialog({ etiqueta, dia, pistaNombre, estado, onC
       >
         <div className="flex flex-col gap-5 bg-superficie p-6">
         <h2 id={idTitulo} className="font-display text-2xl font-semibold tracking-tight text-tinta">
-          {estado === 'confirmada' ? 'Reserva hecha' : 'Confirmar reserva'}
+          {estado === 'confirmada' ? t('confirmar.hecha') : t('confirmar.titulo')}
         </h2>
 
         <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 rounded-ui bg-superficie-2 px-4 py-3.5 text-sm">
-          <dt className="text-tinta-2">Pista</dt><dd className="font-medium text-tinta">{pistaNombre ?? 'Pista'}</dd>
-          <dt className="text-tinta-2">Día</dt><dd className="font-medium capitalize text-tinta">{dia}</dd>
-          <dt className="text-tinta-2">Hora</dt><dd className="font-medium tabular-nums text-tinta">{etiqueta}</dd>
+          <dt className="text-tinta-2">{t('confirmar.pista')}</dt><dd className="font-medium text-tinta">{pistaNombre ?? t('pista.generico')}</dd>
+          <dt className="text-tinta-2">{t('confirmar.dia')}</dt><dd className="font-medium capitalize text-tinta">{dia}</dd>
+          <dt className="text-tinta-2">{t('confirmar.hora')}</dt><dd className="font-medium tabular-nums text-tinta">{etiqueta}</dd>
         </dl>
 
-        {estado === 'ocupada' && <Aviso tipo="error">Alguien se te ha adelantado: esa franja ya está ocupada. Elige otra.</Aviso>}
-        {estado === 'error' && <Aviso tipo="error">No se ha podido reservar. Vuelve a intentarlo.</Aviso>}
-        {estado === 'confirmada' && <Aviso tipo="ok">Reserva confirmada.</Aviso>}
+        {estado === 'ocupada' && <Aviso tipo="error">{t('confirmar.ocupada')}</Aviso>}
+        {estado === 'error' && <Aviso tipo="error">{t('confirmar.error')}</Aviso>}
+        {estado === 'confirmada' && <Aviso tipo="ok">{t('confirmar.confirmada')}</Aviso>}
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Boton variante="secundario" onClick={onCerrar} disabled={reservando}>{terminado ? 'Cerrar' : 'Cancelar'}</Boton>
-          {estado === 'confirmada' && <Boton onClick={onVerReservas} autoFocus>Ver mis reservas</Boton>}
+          <Boton variante="secundario" onClick={onCerrar} disabled={reservando}>{terminado ? t('confirmar.cerrar') : t('confirmar.cancelar')}</Boton>
+          {estado === 'confirmada' && <Boton onClick={onVerReservas} autoFocus>{t('confirmar.verMisReservas')}</Boton>}
           {!terminado && (
             <ClickSpark>
-              <Boton className="w-full sm:w-auto" disabled={reservando} onClick={onConfirmar} autoFocus>{reservando ? 'Reservando…' : 'Confirmar'}</Boton>
+              <Boton className="w-full sm:w-auto" disabled={reservando} onClick={onConfirmar} autoFocus>{reservando ? t('confirmar.reservando') : t('confirmar.confirmar')}</Boton>
             </ClickSpark>
           )}
         </div>

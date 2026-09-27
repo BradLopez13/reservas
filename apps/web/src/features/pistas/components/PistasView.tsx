@@ -1,14 +1,15 @@
 import { ArrowDown, ArrowRight, MagnifyingGlass } from '@phosphor-icons/react';
 import { Link } from 'react-router';
 import type { Deporte } from '@reservas/contracts';
+import { useT } from '../../../i18n/i18n.ts';
 import { estilosBoton, IconoBoton } from '../../../shared/components/Boton.tsx';
 import { Cargando, Esqueleto } from '../../../shared/components/Esqueleto.tsx';
 import { ImagenEscala } from '../../../shared/components/ImagenEscala.tsx';
 import { LineasPista } from '../../../shared/components/LineasPista.tsx';
 import { TextoRevelado } from '../../../shared/components/TextoRevelado.tsx';
+import { TituloAnimado } from '../../../shared/components/TituloAnimado.tsx';
 import { Vacio } from '../../../shared/components/Vacio.tsx';
 import { FOTO_CARRERA, FOTO_PORTADA_ANCHA } from '../../../shared/fotos.ts';
-import { BlurText } from '../../../shared/react-bits/BlurText.tsx';
 import { CountUp } from '../../../shared/react-bits/CountUp.tsx';
 import { Magnet } from '../../../shared/react-bits/Magnet.tsx';
 import type { PistaVista } from '../hooks/usePistas.ts';
@@ -41,6 +42,7 @@ export function claseCelda(i: number, n: number) {
 }
 
 export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFiltrar }: PistasViewProps) {
+  const { t } = useT();
   return (
     <div className="flex flex-col">
       {/* Atención: la pista a sangre, con las líneas dibujadas sobre la foto. */}
@@ -50,22 +52,15 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-fondo to-transparent" />
         <LineasPista className="opacity-[0.16]" />
         <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center gap-8 text-center">
-          {/* El titular animado es decorativo; el h1 real es el que leen los lectores de pantalla. */}
-          <h1 className="sr-only">Tu próximo partido empieza aquí</h1>
-          <div aria-hidden="true">
-            <BlurText
-              text="Tu próximo partido empieza aquí."
-              className="justify-center font-display text-[clamp(3rem,7.2vw,6.25rem)] font-bold leading-[0.95] tracking-[-0.035em] text-tinta"
-            />
-          </div>
-          <p className="max-w-[44ch] text-lg leading-relaxed text-tinta-2 sm:text-xl">
-            Pádel, tenis y fútbol en Madrid. Elige el día, mira las horas libres y reserva en dos clics.
-          </p>
+          <h1 className="font-display text-[clamp(3rem,7.2vw,6.25rem)] font-bold leading-[0.95] tracking-[-0.035em] text-tinta">
+            <TituloAnimado texto={t('portada.titulo')} />
+          </h1>
+          <p className="max-w-[44ch] text-lg leading-relaxed text-tinta-2 sm:text-xl">{t('portada.subtitulo')}</p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Magnet>
-              <a href="#pistas" className={estilosBoton('primario')}>Ver pistas<IconoBoton><ArrowDown size={16} weight="bold" /></IconoBoton></a>
+              <a href="#pistas" className={estilosBoton('primario')}>{t('portada.verPistas')}<IconoBoton><ArrowDown size={16} weight="bold" /></IconoBoton></a>
             </Magnet>
-            {!conSesion && <Link to="/registro" className={estilosBoton('secundario')}>Crear cuenta</Link>}
+            {!conSesion && <Link to="/registro" className={estilosBoton('secundario')}>{t('nav.crearCuenta')}</Link>}
           </div>
         </div>
       </section>
@@ -73,20 +68,18 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
       {/* Interés: las pistas en un bento sin huecos. */}
       <section id="pistas" className="mx-auto w-full max-w-6xl scroll-mt-28 px-4 py-24 sm:px-6 md:py-32">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-display text-4xl font-semibold tracking-tight text-tinta sm:text-5xl">Pistas</h2>
+          <h2 className="font-display text-4xl font-semibold tracking-tight text-tinta sm:text-5xl">{t('portada.pistas')}</h2>
           <FiltroDeporte valor={deporte} opciones={filtros} onCambiar={onFiltrar} />
         </div>
         {cargando ? (
           <>
-            <Cargando que="pistas" />
+            <Cargando que={t('portada.cargandoPistas')} />
             <div className="grid grid-flow-dense grid-cols-1 gap-4 md:auto-rows-[220px] md:grid-cols-12" aria-hidden="true">
               {[0, 1, 2, 3, 4].map((i) => <Esqueleto key={i} className={`h-56 rounded-tarjeta md:h-auto ${claseCelda(i, 5)}`} />)}
             </div>
           </>
         ) : pistas.length === 0 ? (
-          <Vacio Icono={MagnifyingGlass} titulo="No hay pistas de ese deporte">
-            Prueba con otro filtro o mira todas las pistas.
-          </Vacio>
+          <Vacio Icono={MagnifyingGlass} titulo={t('portada.sinPistasTitulo')}>{t('portada.sinPistasTexto')}</Vacio>
         ) : (
           <ul className="grid grid-flow-dense grid-cols-1 gap-4 md:auto-rows-[220px] md:grid-cols-12">
             {pistas.map((p, i) => (
@@ -106,15 +99,12 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
             <span className="mx-3 text-tinta-3 sm:mx-5" aria-hidden="true">/</span>
             <CountUp hasta={1} className="tabular-nums text-acento" />
           </p>
-          <TextoRevelado
-            texto="Cincuenta personas pulsan Reservar a la vez sobre la última hora libre. Una consigue la pista. Las otras cuarenta y nueve lo saben al instante y ven la franja como ocupada. Esta app existe para demostrar cómo se construye eso, y el test que lo comprueba corre contra una base de datos real."
-            className="max-w-[40ch] font-display text-2xl font-medium leading-snug tracking-tight text-tinta sm:text-3xl"
-          />
+          <TextoRevelado texto={t('portada.carrera')} className="max-w-[40ch] font-display text-2xl font-medium leading-snug tracking-tight text-tinta sm:text-3xl" />
           <Link to="/sobre-el-proyecto" className={`${estilosBoton('secundario')} self-start`}>
-            Sobre el proyecto<IconoBoton><ArrowRight size={16} weight="bold" /></IconoBoton>
+            {t('portada.sobreProyecto')}<IconoBoton><ArrowRight size={16} weight="bold" /></IconoBoton>
           </Link>
         </div>
-        <ImagenEscala src={FOTO_CARRERA.src} alt={FOTO_CARRERA.alt} className="lg:col-span-5" />
+        <ImagenEscala src={FOTO_CARRERA.src} alt={t(FOTO_CARRERA.alt)} className="lg:col-span-5" />
       </section>
 
       {/* Acción: una sola llamada, grande. */}
@@ -124,13 +114,11 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
             <LineasPista className="opacity-[0.09]" />
             <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-8">
               <h2 className="font-display text-4xl font-bold leading-[0.98] tracking-[-0.03em] text-tinta sm:text-6xl">
-                {conSesion ? 'Mismas pistas, más partidos.' : 'Tu primera reserva, en un minuto.'}
+                {conSesion ? t('portada.bandaTituloSesion') : t('portada.bandaTitulo')}
               </h2>
-              <p className="max-w-[40ch] text-lg text-tinta-2">
-                {conSesion ? 'Todas tus reservas, en un sitio. Cancela hasta dos horas antes.' : 'Sin pagos ni cuotas: una cuenta, una pista y una hora.'}
-              </p>
+              <p className="max-w-[40ch] text-lg text-tinta-2">{conSesion ? t('portada.bandaTextoSesion') : t('portada.bandaTexto')}</p>
               <Link to={conSesion ? '/mis-reservas' : '/registro'} className={estilosBoton('primario')}>
-                {conSesion ? 'Mis reservas' : 'Crear cuenta'}<IconoBoton><ArrowRight size={16} weight="bold" /></IconoBoton>
+                {conSesion ? t('nav.misReservas') : t('nav.crearCuenta')}<IconoBoton><ArrowRight size={16} weight="bold" /></IconoBoton>
               </Link>
             </div>
           </div>

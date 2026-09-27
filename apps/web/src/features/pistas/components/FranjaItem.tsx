@@ -1,13 +1,13 @@
 import { ClockCounterClockwise, Lock } from '@phosphor-icons/react';
+import { useT } from '../../../i18n/i18n.ts';
 import type { FranjaVista } from '../mappers/franja.mapper.ts';
 
 export type EstadoFranja = 'libre' | 'ocupada' | 'pasada';
 
-const TEXTO: Record<EstadoFranja, string> = { libre: 'Libre', ocupada: 'Ocupada', pasada: 'Pasada' };
-
 // Las franjas no disponibles se distinguen por el icono y el borde discontinuo,
 // no solo por el color, y su texto mantiene el contraste.
 export function FranjaItem({ franja, estado, onElegir }: { franja: FranjaVista; estado: EstadoFranja; onElegir: (f: FranjaVista) => void }) {
+  const { t } = useT();
   const libre = estado === 'libre';
   const Icono = estado === 'ocupada' ? Lock : ClockCounterClockwise;
   return (
@@ -24,7 +24,7 @@ export function FranjaItem({ franja, estado, onElegir }: { franja: FranjaVista; 
       <span className={`font-medium tabular-nums ${libre ? '' : 'line-through decoration-tinta-3/60'}`}>{franja.etiqueta}</span>
       <span className={`inline-flex items-center gap-1 text-xs ${libre ? 'font-medium text-acento group-hover:text-sobre-acento' : ''}`}>
         {!libre && <Icono size={12} weight="bold" aria-hidden="true" />}
-        {TEXTO[estado]}
+        {t(`pista.${estado}`)}
       </span>
     </button>
   );

@@ -1,8 +1,10 @@
+import { useT } from '../../../i18n/i18n.ts';
 import { Boton } from '../../../shared/components/Boton.tsx';
 import { fotoDePista } from '../../../shared/fotos.ts';
 import type { ReservaVista } from '../mappers/reserva.mapper.ts';
 
 export function ReservaItem({ reserva, onCancelar }: { reserva: ReservaVista; onCancelar: (id: string) => void }) {
+  const { t } = useT();
   const cancelada = reserva.estado === 'cancelada';
   const foto = fotoDePista(reserva.deporte, 0);
   return (
@@ -13,9 +15,9 @@ export function ReservaItem({ reserva, onCancelar }: { reserva: ReservaVista; on
         <span className="text-sm capitalize text-tinta-2">{reserva.etiquetaDia} · <span className="tabular-nums">{reserva.etiquetaHora}</span></span>
       </div>
       {cancelada
-        ? <span className="rounded-full bg-superficie-2 px-2.5 py-1 text-xs font-medium text-tinta-2">cancelada</span>
-        : <span className="rounded-full bg-ok-suave px-2.5 py-1 text-xs font-medium text-ok">confirmada</span>}
-      {reserva.cancelable && <Boton variante="peligro" tamano="sm" onClick={() => onCancelar(reserva.id)}>Cancelar</Boton>}
+        ? <span className="rounded-full bg-superficie-2 px-2.5 py-1 text-xs font-medium text-tinta-2">{t('misReservas.cancelada')}</span>
+        : <span className="rounded-full bg-ok-suave px-2.5 py-1 text-xs font-medium text-ok">{t('misReservas.confirmada')}</span>}
+      {reserva.cancelable && <Boton variante="peligro" tamano="sm" onClick={() => onCancelar(reserva.id)}>{t('misReservas.cancelar')}</Boton>}
     </li>
   );
 }

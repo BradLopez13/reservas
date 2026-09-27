@@ -1,38 +1,29 @@
+import { useT } from '../../../i18n/i18n.ts';
 import { REPO_URL } from '../../../shared/components/Layout.tsx';
-import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { Pagina } from '../../../shared/components/Pagina.tsx';
+import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 
-// Página estática: no tiene view-model.
+// Página estática: no tiene view-model. Los textos salen del diccionario.
 export function PrivacidadScreen() {
-  useTitulo('Privacidad');
+  const { t, d } = useT();
+  useTitulo(t('privacidad.pestana'));
   return (
-    <Pagina titulo="Privacidad" entradilla="Qué datos guarda esta aplicación, para qué y durante cuánto tiempo.">
+    <Pagina titulo={t('privacidad.titulo')} entradilla={t('privacidad.entradilla')}>
       <div className="texto">
-        <h2>Qué se guarda</h2>
+        <h2>{t('privacidad.queSeGuarda')}</h2>
         <ul>
-          <li><strong>Tu nombre y tu email</strong>, para identificar tu cuenta y mostrarte tus reservas.</li>
-          <li><strong>Un hash de tu contraseña</strong> (Argon2id). La contraseña en sí no se guarda ni se puede recuperar.</li>
-          <li><strong>Tus sesiones</strong>: un identificador aleatorio, guardado también como hash, con la fecha de creación y de último uso.</li>
-          <li><strong>Tus reservas</strong>, incluidas las canceladas.</li>
-          <li><strong>Los intentos de inicio de sesión fallidos</strong> por email y dirección IP, durante quince minutos, para limitar los ataques de fuerza bruta.</li>
+          {d.privacidad.datos.map((x) => <li key={x.fuerte}><strong>{x.fuerte}</strong>{x.resto}</li>)}
         </ul>
 
-        <h2>Cookies</h2>
-        <p>
-          Solo hay una cookie, la de sesión. Es <code>httpOnly</code>, así que el JavaScript de la página no puede leerla, y caduca a los siete días sin uso o a los treinta desde que entraste.
-          No hay cookies de análisis, de publicidad ni de terceros.
-        </p>
+        <h2>{t('privacidad.cookies')}</h2>
+        <p>{t('privacidad.cookiesA')}<code>httpOnly</code>{t('privacidad.cookiesB')}</p>
 
-        <h2>Terceros</h2>
-        <p>
-          La aplicación se sirve desde Vercel y la base de datos está en Supabase. Las fotografías se cargan desde Unsplash, que recibe la petición de imagen como cualquier otro servidor de imágenes.
-          Ningún dato de tu cuenta se envía a ninguno de ellos más allá de lo necesario para servir la aplicación.
-        </p>
+        <h2>{t('privacidad.terceros')}</h2>
+        <p>{t('privacidad.tercerosTexto')}</p>
 
-        <h2>Durante cuánto tiempo</h2>
+        <h2>{t('privacidad.cuanto')}</h2>
         <p>
-          Es un proyecto de demostración. Los datos pueden borrarse en cualquier momento, sin aviso, al reiniciar la base de datos.
-          Si quieres que se elimine tu cuenta antes, abre una incidencia en <a href={REPO_URL} target="_blank" rel="noreferrer">el repositorio de GitHub</a>.
+          {t('privacidad.cuantoA')}<a href={REPO_URL} target="_blank" rel="noreferrer">{t('privacidad.cuantoEnlace')}</a>{t('privacidad.cuantoB')}
         </p>
       </div>
     </Pagina>
