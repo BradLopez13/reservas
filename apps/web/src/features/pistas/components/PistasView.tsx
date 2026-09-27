@@ -94,9 +94,10 @@ export function PistasView({ deporte, filtros, pistas, cargando, conSesion, onFi
       {/* Deseo: la carrera de cincuenta, contada al ritmo del scroll. */}
       <section className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 md:py-40 lg:grid-cols-12 lg:gap-16">
         <div className="flex flex-col gap-8 lg:col-span-7">
-          <p className="font-display text-[6rem] font-bold leading-none tracking-[-0.04em] text-tinta sm:text-[9rem]">
+          {/* Los números animados empiezan en 0 y solo ilustran el párrafo de abajo: fuera del árbol de accesibilidad. */}
+          <p aria-hidden="true" className="font-display text-[6rem] font-bold leading-none tracking-[-0.04em] text-tinta sm:text-[9rem]">
             <CountUp hasta={50} className="tabular-nums" />
-            <span className="mx-3 text-tinta-3 sm:mx-5" aria-hidden="true">/</span>
+            <span className="mx-3 text-tinta-3 sm:mx-5">/</span>
             <CountUp hasta={1} className="tabular-nums text-acento" />
           </p>
           <TextoRevelado texto={t('portada.carrera')} className="max-w-[40ch] font-display text-2xl font-medium leading-snug tracking-tight text-tinta sm:text-3xl" />

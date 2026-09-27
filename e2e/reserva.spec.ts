@@ -13,7 +13,7 @@ test('registro → reservar → aparece en mis reservas → cancelar', async ({ 
   await registrar(page, 'Ana');
   await page.getByRole('link', { name: /Pádel 1/ }).click();
   const manana = new Date(Date.now() + 86_400_000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' });
-  await page.getByLabel('Día').fill(manana);
+  await page.getByLabel('Día', { exact: true }).fill(manana);
   await page.getByRole('button', { name: /Libre/ }).first().click();
   await page.getByRole('button', { name: 'Confirmar' }).click();
   await expect(page.getByText('Reserva confirmada.')).toBeVisible();

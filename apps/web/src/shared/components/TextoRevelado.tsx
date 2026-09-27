@@ -7,9 +7,11 @@ import { useReducedMotion } from '../hooks/useReducedMotion.ts';
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // Un párrafo cuyas palabras se encienden una a una al ritmo del scroll.
-// Con prefers-reduced-motion se pinta entero desde el principio.
+// La capa animada, partida en spans, queda fuera del árbol de accesibilidad;
+// los lectores de pantalla reciben el párrafo entero. Con
+// prefers-reduced-motion se pinta entero desde el principio.
 export function TextoRevelado({ texto, className = '' }: { texto: string; className?: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const reducido = useReducedMotion();
   const palabras = texto.split(' ');
 
@@ -22,9 +24,13 @@ export function TextoRevelado({ texto, className = '' }: { texto: string; classN
     );
   }, { scope: ref, dependencies: [reducido] });
 
+  if (reducido) return <p className={className}>{texto}</p>;
   return (
-    <p ref={ref} className={className}>
-      {palabras.map((p, i) => <span key={i} className="inline-block">{p}{i < palabras.length - 1 ? ' ' : ''}</span>)}
+    <p className={className}>
+      <span className="sr-only">{texto}</span>
+      <span ref={ref} aria-hidden="true">
+        {palabras.map((p, i) => <span key={i} className="inline-block">{p}{i < palabras.length - 1 ? ' ' : ''}</span>)}
+      </span>
     </p>
   );
 }
