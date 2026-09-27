@@ -1,14 +1,14 @@
 import type { Config } from './shared/config.ts';
 import type { Db } from './shared/db/cliente.ts';
 import type { IntentoLoginRepository, SesionRepository, UsuarioRepository } from './modules/auth/domain/ports.ts';
-import { intentoLoginRepository } from './modules/auth/infra/intentosLogin.repository.ts';
-import { sesionRepository } from './modules/auth/infra/sesiones.repository.ts';
-import { usuarioRepository } from './modules/auth/infra/usuarios.repository.ts';
+import { intentoLoginRepository } from './modules/auth/infra/persistence/intentosLogin.repository.ts';
+import { sesionRepository } from './modules/auth/infra/persistence/sesiones.repository.ts';
+import { usuarioRepository } from './modules/auth/infra/persistence/usuarios.repository.ts';
 import type { PistaRepository } from './modules/pistas/domain/ports.ts';
-import { pistaRepository } from './modules/pistas/infra/pistas.repository.ts';
+import { pistaRepository } from './modules/pistas/infra/persistence/pistas.repository.ts';
 import type { IdempotenciaRepository, ReservaRepository } from './modules/reservas/domain/ports.ts';
-import { idempotenciaRepository } from './modules/reservas/infra/idempotencia.repository.ts';
-import { crearReservaRepository } from './modules/reservas/infra/repository/estrategia.ts';
+import { idempotenciaRepository } from './modules/reservas/infra/persistence/idempotencia.repository.ts';
+import { crearReservaRepository } from './modules/reservas/infra/persistence/reservas/estrategia.ts';
 
 // Raíz de composición: el único sitio donde se decide qué implementación
 // concreta recibe cada puerto. Todo lo demás depende de interfaces.

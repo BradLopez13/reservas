@@ -1,9 +1,9 @@
 import Fastify from 'fastify';
 import type { Contexto } from './contexto.ts';
-import { rutasAuth } from './modules/auth/infra/rutas.ts';
-import { registrarSesion } from './modules/auth/infra/sesion.plugin.ts';
-import { rutasPistas } from './modules/pistas/infra/rutas.ts';
-import { rutasReservas } from './modules/reservas/infra/rutas.ts';
+import { rutasAuth } from './modules/auth/infra/http/rutas.ts';
+import { registrarSesion } from './modules/auth/infra/http/sesion.plugin.ts';
+import { rutasPistas } from './modules/pistas/infra/http/rutas.ts';
+import { rutasReservas } from './modules/reservas/infra/http/rutas.ts';
 import { registrarErrores } from './shared/http/errores.plugin.ts';
 import { registrarOrigen } from './shared/http/origen.plugin.ts';
 
