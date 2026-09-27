@@ -16,7 +16,7 @@ export async function reservarPista(ctx: Ctx, d: { usuarioId: string; pistaId: s
         const pista = await ctx.repos.pistas.buscarPorId(tx, d.pistaId);
         if (!pista) throw new PistaNoEncontrada();
         const v = esFranjaValida(pista, d.inicio, ahora);
-        if (!v.ok) throw new FranjaInvalida(v.motivo);
+        if (v.ok === false) throw new FranjaInvalida(v.motivo); // === false: sin strictNullChecks, `!v.ok` no estrecha la unión
         return ctx.repos.reservas.crear(tx, { pistaId: d.pistaId, usuarioId: d.usuarioId, periodo: v.periodo });
       });
     } catch (e) {
