@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": "/api?__ruta=$1"
     }
   ],
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
