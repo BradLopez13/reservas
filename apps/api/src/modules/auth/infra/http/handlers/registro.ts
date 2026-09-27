@@ -6,7 +6,8 @@ import { registrar } from '../../../application/commands/registrar.ts';
 import { ponerCookie } from '../sesion.plugin.ts';
 
 export const registro = (ctx: Contexto): RouteHandlerMethod => async (req, reply) => {
-  const { usuario, token } = await registrar(ctx, entrada.body(req, RegistroBodySchema));
+  const { email, password, nombre } = entrada.body(req, RegistroBodySchema);
+  const { usuario, token } = await registrar(ctx, { email, password, nombre });
   ponerCookie(reply, ctx, token);
   return reply.status(201).send(usuario);
 };
