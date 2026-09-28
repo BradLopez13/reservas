@@ -4,7 +4,7 @@ import { leerConfig } from './shared/config.ts';
 
 // Estos tests no tocan la base de datos: db y repos son de mentira.
 const config = leerConfig({ DATABASE_URL: 'postgres://x', APP_ORIGIN: 'http://localhost:8080' });
-const ctx = { config, db: { transaction: async () => null } as never, repos: {} as never, ahora: () => new Date() };
+const ctx = { config, db: { transaction: async () => null, execute: async () => [] } as never, repos: {} as never, ahora: () => new Date() };
 
 describe('config', () => {
   it('sin COOKIE_SECURE la cookie no lleva el prefijo __Host-', () => {
@@ -18,6 +18,14 @@ describe('app', () => {
     const res = await app.inject({ method: 'GET', url: '/api/healthz' });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({ ok: true });
+  });
+
+  it('/api/healthz da 503 si la base de datos no responde', async () => {
+    const caida = { ...ctx, db: { execute: async () => { throw new Error('pausada'); } } as never };
+    const app = await crearApp(caida);
+    const res = await app.inject({ method: 'GET', url: '/api/healthz' });
+    expect(res.statusCode).toBe(503);
+    expect(res.json()).toEqual({ ok: false });
   });
 
   it('rechaza un POST sin cabecera Origin', async () => {
