@@ -32,7 +32,7 @@ export function MisReservasView({ reservas, cargando, error, onCancelar }: MisRe
           <div className="flex flex-col gap-3" aria-hidden="true">{[0, 1, 2].map((i) => <Esqueleto key={i} className="h-28 rounded-tarjeta" />)}</div>
         </>
       ) : reservas.length === 0 ? (
-        <Vacio Icono={CalendarBlank} titulo={t('misReservas.vacioTitulo')} accion={<Link to="/" className={estilosBoton('primario', 'sm')}>{t('misReservas.verPistas')}</Link>}>
+        <Vacio Icono={CalendarBlank} titulo={t('misReservas.vacioTitulo')} accion={<Link to="/#pistas" className={estilosBoton('primario', 'sm')}>{t('misReservas.verPistas')}</Link>}>
           {t('misReservas.vacioTexto')}
         </Vacio>
       ) : (

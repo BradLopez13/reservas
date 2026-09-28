@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
-import { t, useT } from '../../../i18n/i18n.ts';
-import { diaCorto, hoy } from '../../../shared/fechas.ts';
+import { useT } from '../../../i18n/i18n.ts';
+import { hoy } from '../../../shared/fechas.ts';
 import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
 import { useSesion } from '../../auth/providers/SesionProvider.tsx';
 import type { FranjaVista } from '../mappers/franja.mapper.ts';
 import { useFranjasQuery, usePistasQuery } from '../queries/usePistasQueries.ts';
 
 export type EstadoPista = 'cargando' | 'no-encontrada' | 'error' | 'ok';
+
+// Lo que se iba a reservar cuando se pidió la sesión; viaja en el estado de la ruta.
+export interface ReservaPendiente { pista: string | null; inicio: string; fin: string }
 
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -42,11 +45,13 @@ export function useFranjasDia() {
     setParams((p) => { p.delete('franja'); return p; }, { replace: true });
   }, [usuario, franjaParam, franjas.data, setParams]);
 
-  // Elegir una franja sin sesión lleva al login, explicando por qué, y vuelve aquí con la franja guardada.
+  // Elegir una franja sin sesión lleva al login y vuelve aquí con la franja
+  // guardada. El login recibe los datos, no la frase: la redacta él en el
+  // idioma que esté activo en ese momento.
   const onElegir = (f: FranjaVista) => {
     if (!usuario) {
-      const motivo = t('pista.motivoLogin', { pista: pista?.nombre ?? t('pista.generico'), dia: diaCorto(f.inicio), hora: f.etiqueta });
-      navigate('/login', { state: { volverA: rutaConFranja(pistaId, fecha, f), motivo } });
+      const reserva: ReservaPendiente = { pista: pista?.nombre ?? null, inicio: f.inicio.toISOString(), fin: f.fin.toISOString() };
+      navigate('/login', { state: { volverA: rutaConFranja(pistaId, fecha, f), reserva } });
       return;
     }
     setSeleccion(f);

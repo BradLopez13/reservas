@@ -10,7 +10,7 @@ export function NoEncontradaScreen() {
   useTitulo(t('noEncontrada.pestana'));
   return (
     <div className="mx-auto max-w-xl py-10">
-      <Vacio Icono={Compass} titulo={t('noEncontrada.titulo')} accion={<Link to="/" className={estilosBoton('primario', 'sm')}>{t('noEncontrada.verPistas')}</Link>}>
+      <Vacio Icono={Compass} titulo={t('noEncontrada.titulo')} accion={<Link to="/#pistas" className={estilosBoton('primario', 'sm')}>{t('noEncontrada.verPistas')}</Link>}>
         {t('noEncontrada.texto')}
       </Vacio>
     </div>

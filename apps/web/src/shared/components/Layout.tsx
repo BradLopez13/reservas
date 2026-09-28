@@ -72,8 +72,10 @@ export function Layout() {
     void qc.invalidateQueries();
   };
 
+  // «Pistas» apunta al listado, no a la portada: desde la propia portada solo
+  // cambia el ancla, así que el menú móvil se cierra al pulsar, no al cambiar de ruta.
   const rutas = [
-    { a: '/', texto: t('nav.pistas'), fin: true },
+    { a: '/#pistas', texto: t('nav.pistas'), fin: true },
     ...(usuario ? [{ a: '/mis-reservas', texto: t('nav.misReservas'), fin: false }] : []),
     { a: '/como-funciona', texto: t('nav.comoFunciona'), fin: false },
     { a: '/normas', texto: t('nav.normas'), fin: false },
@@ -150,7 +152,7 @@ export function Layout() {
           <nav aria-label={t('nav.menu')} className="flex flex-col gap-4">
             {rutas.map((r, i) => (
               <motion.div key={r.a} initial={reducido ? false : { opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.06, duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
-                <NavLink to={r.a} end={r.fin} className={enlaceMovil}>
+                <NavLink to={r.a} end={r.fin} className={enlaceMovil} onClick={() => setMenuAbierto(false)}>
                   <span aria-hidden="true" className="rotulo text-tinta-3">{String(i + 1).padStart(2, '0')}</span>{r.texto}
                 </NavLink>
               </motion.div>
@@ -161,6 +163,7 @@ export function Layout() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 + rutas.length * 0.06, duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             className="mt-8 flex flex-wrap items-center gap-2 border-t border-borde pt-6"
+            onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setMenuAbierto(false); }}
           >
             {enlacesSesion}{botonIdioma}
           </motion.div>
@@ -181,7 +184,7 @@ export function Layout() {
             </div>
             <nav aria-label={t('nav.reservar')} className="flex flex-col gap-2.5">
               <p className="rotulo uppercase text-tinta-3">{t('nav.reservar')}</p>
-              <Link to="/" className={enlacePie}>{t('nav.pistas')}</Link>
+              <Link to="/#pistas" className={enlacePie}>{t('nav.pistas')}</Link>
               {usuario ? <Link to="/mis-reservas" className={enlacePie}>{t('nav.misReservas')}</Link> : <Link to="/login" className={enlacePie}>{t('nav.entrar')}</Link>}
               {usuario ? <Link to="/ajustes" className={enlacePie}>{t('nav.ajustes')}</Link> : <Link to="/registro" className={enlacePie}>{t('nav.crearCuenta')}</Link>}
             </nav>

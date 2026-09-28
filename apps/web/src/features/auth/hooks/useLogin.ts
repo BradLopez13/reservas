@@ -2,8 +2,10 @@ import type { Login } from '@reservas/contracts';
 import { useLocation, useNavigate } from 'react-router';
 import { t, useT } from '../../../i18n/i18n.ts';
 import { ApiError } from '../../../shared/api/errores.ts';
+import { diaCorto, rangoHoras } from '../../../shared/fechas.ts';
 import { useFormulario } from '../../../shared/hooks/useFormulario.ts';
 import { useTitulo } from '../../../shared/hooks/useTitulo.ts';
+import type { ReservaPendiente } from '../../pistas/hooks/useFranjasDia.ts';
 import { useLogin as useLoginMutation } from '../mutations/useAuthMutations.ts';
 import { useSesion } from '../providers/SesionProvider.tsx';
 
@@ -16,8 +18,16 @@ export const mensajeErrorLogin = (e: unknown) =>
 // A dónde volver tras el login: la ruta que exigía sesión, o la portada.
 export const rutaDeVuelta = (state: unknown) => (state as { volverA?: string } | null)?.volverA ?? '/';
 
-// Por qué se ha pedido la sesión, si la pantalla anterior lo dijo.
-export const motivoDeLogin = (state: unknown) => (state as { motivo?: string } | null)?.motivo ?? null;
+// La reserva que quedó pendiente al pedir la sesión, si la pantalla anterior la dejó.
+export const reservaPendiente = (state: unknown) => (state as { reserva?: ReservaPendiente } | null)?.reserva ?? null;
+
+// La frase se redacta al pintar, con el idioma y el formato de fecha activos.
+export const motivoDeLogin = (state: unknown) => {
+  const r = reservaPendiente(state);
+  if (!r) return null;
+  const inicio = new Date(r.inicio);
+  return t('pista.motivoLogin', { pista: r.pista ?? t('pista.generico'), dia: diaCorto(inicio), hora: rangoHoras(inicio, new Date(r.fin)) });
+};
 
 // --- View-model: todo lo que la vista necesita, y nada más.
 export function useLogin() {

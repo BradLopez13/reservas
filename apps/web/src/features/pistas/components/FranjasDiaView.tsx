@@ -51,7 +51,7 @@ export function FranjasDiaView({ pista, estado, fecha, minFecha, franjas, cargan
         <Vacio
           Icono={sinRed ? WifiSlash : MapPinLine}
           titulo={sinRed ? t('pista.errorTitulo') : t('pista.noExisteTitulo')}
-          accion={<Link to="/" className={estilosBoton('primario', 'sm')}>{t('pista.volverAPistas')}</Link>}
+          accion={<Link to="/#pistas" className={estilosBoton('primario', 'sm')}>{t('pista.volverAPistas')}</Link>}
         >
           {sinRed ? t('pista.errorTexto') : t('pista.noExisteTexto')}
         </Vacio>

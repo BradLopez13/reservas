@@ -42,7 +42,7 @@ export function ComoFuncionaScreen() {
         </div>
       </section>
 
-      <Link to="/" className={`${estilosBoton('primario')} self-start`}>{t('comoFunciona.verPistas')}</Link>
+      <Link to="/#pistas" className={`${estilosBoton('primario')} self-start`}>{t('comoFunciona.verPistas')}</Link>
     </Pagina>
   );
 }
