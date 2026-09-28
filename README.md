@@ -10,7 +10,7 @@ Para demostrar dos cosas que se pueden comprobar, no solo contar: que una pista 
 
 ## La carrera de 50
 
-Cincuenta reservas simultáneas de la misma franja, contra un PostgreSQL real levantado con Testcontainers. Exactamente una gana; las otras 49 reciben `PISTA_OCUPADA`. El mismo test corre contra las tres estrategias:
+Cincuenta reservas simultáneas de la misma franja, contra un PostgreSQL real levantado con Testcontainers. Exactamente una gana; las otras 49 reciben `PISTA_OCUPADA`. Y la otra cara: cincuenta reservas simultáneas de cincuenta franjas libres del mismo día, donde ninguna puede recibir `PISTA_OCUPADA`. Los mismos tests corren contra las tres estrategias:
 
 ```
 $ pnpm --filter @reservas/api exec vitest run estrategias
@@ -19,17 +19,20 @@ $ pnpm --filter @reservas/api exec vitest run estrategias
 ✓ estrategia pesimista > rechaza una segunda reserva de la misma franja
 ✓ estrategia pesimista > deja libre la franja cuando la reserva está cancelada
 ✓ estrategia pesimista > 50 peticiones simultáneas por la última franja: exactamente una gana
+✓ estrategia pesimista > 50 peticiones simultáneas a 50 franjas libres del mismo día: ninguna recibe PISTA_OCUPADA
 ✓ estrategia optimista > crea una reserva confirmada
 ✓ estrategia optimista > rechaza una segunda reserva de la misma franja
 ✓ estrategia optimista > deja libre la franja cuando la reserva está cancelada
 ✓ estrategia optimista > 50 peticiones simultáneas por la última franja: exactamente una gana
+✓ estrategia optimista > 50 peticiones simultáneas a 50 franjas libres del mismo día: ninguna recibe PISTA_OCUPADA
 ✓ estrategia exclude > crea una reserva confirmada
 ✓ estrategia exclude > rechaza una segunda reserva de la misma franja
 ✓ estrategia exclude > deja libre la franja cuando la reserva está cancelada
 ✓ estrategia exclude > 50 peticiones simultáneas por la última franja: exactamente una gana
+✓ estrategia exclude > 50 peticiones simultáneas a 50 franjas libres del mismo día: ninguna recibe PISTA_OCUPADA
 Test Files  1 passed (1)
-Tests  12 passed (12)
-Duration  20.30s
+Tests  15 passed (15)
+Duration  12.59s
 ```
 
 ## Las tres estrategias
@@ -38,11 +41,13 @@ Duration  20.30s
 
 | Estrategia | Cómo | Con 50 peticiones | Fichero |
 |---|---|---|---|
-| Pesimista | `SELECT … FOR UPDATE` sobre la pista, comprobar solapes, insertar | Las 49 perdedoras esperan en fila por el bloqueo y luego ven la franja ocupada | `reservas.pesimista.ts` |
-| Optimista | Leer una versión por pista y día, comprobar, insertar, `UPDATE … WHERE version = leída` | Nadie espera; quien pierde el `UPDATE` reintenta y ve el solape | `reservas.optimista.ts` |
-| `EXCLUDE` | Restricción `EXCLUDE USING gist (pista_id WITH =, periodo WITH &&)` en la base de datos | La segunda inserción falla con `23P01`; PostgreSQL decide | `reservas.exclude.ts` |
+| Pesimista | `SELECT … FOR UPDATE` sobre la pista, comprobar solapes, insertar | Las 49 perdedoras esperan en fila por el bloqueo y luego ven la franja ocupada | `reservas/pesimista.ts` |
+| Optimista | Leer una versión por pista y día, comprobar, insertar, `UPDATE … WHERE version = leída` | Nadie espera; quien pierde el `UPDATE` reintenta y ve el solape | `reservas/optimista.ts` |
+| `EXCLUDE` | Restricción `EXCLUDE USING gist (pista_id WITH =, periodo WITH &&)` en la base de datos | La segunda inserción falla con `23P01`; PostgreSQL decide | `reservas/exclude.ts` |
 
-En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque alguien añada mañana otra ruta que inserte reservas. Los tests de las otras dos **quitan la restricción antes de correr**, para que la base de datos no les tape los fallos.
+Los ficheros están en `apps/api/src/modules/reservas/infra/persistence/`. En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque alguien añada mañana otra ruta que inserte reservas. Los tests de las otras dos **quitan la restricción antes de correr**, para que la base de datos no les tape los fallos.
+
+La optimista tiene un coste que el test de franjas distintas deja a la vista: la versión es por pista y día, así que reservas de franjas diferentes también se pisan. Tras tres reintentos perdidos la petición no recibe `PISTA_OCUPADA` (la franja puede estar libre) sino `CONTENCION`, un 503 con `Retry-After: 1` que la idempotencia no guarda: repetir la misma clave vuelve a intentarlo.
 
 ## Sesiones
 
@@ -51,7 +56,9 @@ En producción se usa `EXCLUDE`: es la única que sigue funcionando aunque algui
 - Token nuevo en cada login. Logout, «cerrar todas las sesiones» y cambio de contraseña revocan al instante.
 - Caducidad deslizante: 7 días sin uso, máximo 30 desde el login.
 - CSRF: `SameSite=Lax` más la comprobación de `Origin` en toda petición que modifica datos.
-- Login con Argon2id, mismo error y mismo coste exista o no el email, y 5 intentos por email e IP cada 15 minutos.
+- Login con Argon2id, mismo error y mismo coste exista o no el email.
+- Límite de intentos en ventanas de 15 minutos con tres contadores: 5 por email e IP, 20 por IP (una máquina probando muchas cuentas) y 50 por email (muchas máquinas contra una). Bloquear la cuenta de otro exige al menos diez IP, no cinco contraseñas. El intento se apunta antes de contar, así que N peticiones simultáneas no se cuelan todas por el mismo recuento.
+- La IP sale de `X-Forwarded-For`, pero solo de la entrada que añade el proxy propio (nginx o Vercel, `TRUST_PROXY_HOPS`); lo que el cliente escriba delante no cuenta.
 
 ## Arquitectura
 
@@ -142,9 +149,11 @@ El seed de demostración es determinista y se puede repetir: crea las pistas y l
 
 ## Despliegue
 
-Vercel compila la API con su propio TypeScript (sin `strict`, lib ES2020). `apps/api/tsconfig.vercel.json` imita esa configuración y `pnpm typecheck` la ejecuta además de la estricta, así que lo que pasa la CI despliega.
+Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web reescribe `/api/*` al proyecto de la API, así que el navegador ve un solo origen y la cookie funciona igual que en local.
 
-Dos proyectos en Vercel apuntando a este repo, `apps/web` y `apps/api`; la web reescribe `/api/*` al proyecto de la API, así que el navegador ve un solo origen y la cookie funciona igual que en local. La base de datos es PostgreSQL en Supabase (plan gratuito), a través de su pooler en modo transacción; por eso el cliente usa `prepare: false`. Supabase pausa el proyecto tras una semana sin actividad y hay que reanudarlo desde su panel.
+La API no la compila Vercel: `apps/api/scripts/build-vercel.mjs` la empaqueta con esbuild y escribe `.vercel/output` según la Build Output API, una única función que Vercel despliega tal cual. Las migraciones corren en ese mismo build, pero solo en los despliegues de producción (`VERCEL_ENV=production`); los de preview de un PR no tocan el esquema.
+
+La base de datos es PostgreSQL en Supabase (plan gratuito), a través de su pooler en modo transacción; por eso el cliente usa `prepare: false`. `/api/healthz` hace un `SELECT 1`, así que da 503 si la base no responde. Supabase pausa el proyecto tras una semana sin actividad; para que no ocurra, `.github/workflows/despertar-demo.yml` pide ese endpoint cada tres días, y si falla, el job lo avisa.
 
 ## Créditos
 

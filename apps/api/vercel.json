@@ -2,5 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm db:migrate && pnpm build:vercel"
+  "buildCommand": "if [ \"$VERCEL_ENV\" = production ]; then pnpm db:migrate; fi && pnpm build:vercel"
 }
