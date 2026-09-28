@@ -111,19 +111,19 @@ La app completa, como en producción (nginx + API + PostgreSQL), en `http://loca
 docker compose -f infra/docker-compose.yml up --build
 ```
 
-En modo desarrollo, con recarga en caliente:
+En modo desarrollo, con recarga en caliente, la API habla directamente con la base de datos de Supabase: no hay PostgreSQL local.
 
 ```bash
-docker compose -f infra/docker-compose.dev.yml up -d     # solo PostgreSQL
-cp apps/api/.env.example apps/api/.env                   # y pon COOKIE_SECURE=false, APP_ORIGIN=http://localhost:5173
-pnpm --filter @reservas/api db:migrate
-pnpm --filter @reservas/api db:seed                     # las cinco pistas básicas
+cp apps/api/.env.example apps/api/.env                   # y pon las dos URL del pooler de Supabase
+set -a; . apps/api/.env; set +a                          # los scripts leen el entorno, no el fichero
+pnpm --filter @reservas/api db:migrate                   # solo la primera vez o tras una migración nueva
+pnpm --filter @reservas/api db:seed                     # las cinco pistas básicas, si la base está vacía
 pnpm --filter @reservas/api db:seed:demo                # opcional: nueve pistas, doce cuentas y unas mil reservas
 pnpm --filter @reservas/api dev                          # API en :3000
 pnpm --filter @reservas/web dev                          # web en :5173, con proxy a /api
 ```
 
-Requiere Node 24, pnpm y Docker. Los scripts leen las variables del entorno, no del fichero: exporta `.env` antes (`set -a; . apps/api/.env; set +a`) o pásalas en la línea de comandos.
+Requiere Node 24 y pnpm; Docker solo hace falta para el `docker compose` completo y para los tests de la API y el e2e. Como la base es la misma que la de producción, cualquier reserva hecha en local aparece en la demo pública.
 
 El seed de demostración es determinista y se puede repetir: crea las pistas y las cuentas que falten y no toca los días que ya tienen reservas. Las doce cuentas (`lucia.ferrer@example.com`, `marcos.iglesias@example.com`…) comparten la contraseña `demo-reservas-2026`.
 
