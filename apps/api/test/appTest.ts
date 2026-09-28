@@ -6,8 +6,9 @@ import { crearDb } from '../src/shared/db/cliente.ts';
 export const ORIGEN = 'http://localhost:8080';
 
 // La app real contra un PostgreSQL de Testcontainers, con un reloj que los tests pueden mover.
+// Como detrás de nginx, se fía de un proxy: la IP del cliente sale de X-Forwarded-For.
 export async function crearAppTest(pg: { url: string }) {
-  const config = leerConfig({ DATABASE_URL: pg.url, APP_ORIGIN: ORIGEN, COOKIE_SECURE: 'true', RESERVAS_ESTRATEGIA: 'exclude' });
+  const config = leerConfig({ DATABASE_URL: pg.url, APP_ORIGIN: ORIGEN, COOKIE_SECURE: 'true', RESERVAS_ESTRATEGIA: 'exclude', TRUST_PROXY_HOPS: '1' });
   const { db, sql } = crearDb(pg.url);
   const reloj = { valor: new Date('2026-10-24T06:00:00Z'), set(d: Date) { this.valor = d; } };
   const ctx = crearContexto(config, db, () => reloj.valor);

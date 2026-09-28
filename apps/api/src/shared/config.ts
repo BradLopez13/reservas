@@ -5,6 +5,7 @@ const Schema = z.object({
   APP_ORIGIN: z.url(),
   COOKIE_SECURE: z.enum(['true', 'false']).default('true'),
   RESERVAS_ESTRATEGIA: z.enum(['pesimista', 'optimista', 'exclude']).default('exclude'),
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
 });
 
 export type Config = ReturnType<typeof leerConfig>;
@@ -19,5 +20,9 @@ export function leerConfig(env: Record<string, string | undefined> = process.env
     cookieName: cookieSecure ? '__Host-sesion' : 'sesion',
     cookieSecure,
     estrategiaReservas: v.RESERVAS_ESTRATEGIA,
+    // Cuántos proxies propios hay delante (nginx en Docker, el de Vercel): de
+    // X-Forwarded-For solo se creen esas últimas entradas, las que ellos añaden;
+    // lo que venga antes lo pudo escribir el cliente. Con 0, req.ip es el socket.
+    saltosProxy: v.TRUST_PROXY_HOPS,
   };
 }

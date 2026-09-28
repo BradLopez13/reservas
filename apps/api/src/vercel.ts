@@ -20,7 +20,8 @@ export function urlOriginal(url: string): string {
   return `/api/${ruta}${u.search}`;
 }
 
-const config = leerConfig();
+// Delante solo está el proxy de Vercel, que reescribe X-Forwarded-For con la IP del cliente.
+const config = leerConfig({ TRUST_PROXY_HOPS: '1', ...process.env });
 const { db } = crearDb(config.databaseUrl, 5);
 const app = await crearApp(crearContexto(config, db));
 

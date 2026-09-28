@@ -12,7 +12,8 @@ afterAll(async () => { await t.cerrar(); await pg.parar(); });
 beforeEach(async () => { await t.sql`TRUNCATE usuarios, sesiones, intentos_login CASCADE`; t.reloj.set(new Date('2026-10-24T06:00:00Z')); });
 
 const registrar = () => t.app.inject({ method: 'POST', url: '/api/auth/registro', headers: H, payload: ana });
-const login = (password = ana.password) => t.app.inject({ method: 'POST', url: '/api/auth/login', headers: H, payload: { email: ana.email, password } });
+const login = (password = ana.password, ip = '203.0.113.1', email = ana.email) =>
+  t.app.inject({ method: 'POST', url: '/api/auth/login', headers: { ...H, 'x-forwarded-for': ip }, payload: { email, password } });
 
 describe('registro', () => {
   it('crea la cuenta, devuelve el usuario y pone la cookie __Host-sesion', async () => {
@@ -50,6 +51,25 @@ describe('login', () => {
     expect(Number(res.headers['retry-after'])).toBeGreaterThan(0);
     t.reloj.set(new Date('2026-10-24T06:16:00Z'));
     expect((await login()).statusCode).toBe(204);
+  });
+  it('los fallos desde una IP no bloquean la cuenta desde otra', async () => {
+    for (let i = 0; i < 5; i++) await login('mal-mal-mal-mal', '198.51.100.7');
+    expect((await login('mal-mal-mal-mal', '198.51.100.7')).statusCode).toBe(429);
+    expect((await login(ana.password, '203.0.113.1')).statusCode).toBe(204);
+  });
+  it('no se fía de la IP que el cliente escribe delante en X-Forwarded-For', async () => {
+    for (let i = 0; i < 5; i++) await login('mal-mal-mal-mal', `10.0.0.${i}, 198.51.100.7`);
+    expect((await login(ana.password, '10.0.0.99, 198.51.100.7')).statusCode).toBe(429);
+  });
+  it('una IP que prueba muchas cuentas se bloquea al vigésimo primer intento', async () => {
+    for (let i = 0; i < 20; i++) expect((await login('mal-mal-mal-mal', '198.51.100.7', `otra${i}@example.com`)).statusCode).toBe(401);
+    expect((await login('mal-mal-mal-mal', '198.51.100.7', 'una-mas@example.com')).statusCode).toBe(429);
+  });
+  it('intentos simultáneos: como mucho 5 llegan a comprobar la contraseña', async () => {
+    const res = await Promise.all(Array.from({ length: 12 }, () => login('mal-mal-mal-mal')));
+    const codigos = res.map((r) => r.statusCode);
+    expect(codigos.filter((c) => c === 401).length).toBeLessThanOrEqual(5);
+    expect(codigos.filter((c) => c !== 401 && c !== 429)).toEqual([]);
   });
 });
 

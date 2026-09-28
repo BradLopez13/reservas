@@ -18,7 +18,9 @@ export interface SesionRepository {
 }
 
 export interface IntentoLoginRepository {
+  /** Apunta un intento por clave y devuelve sus ids. */
+  registrar(tx: Tx, claves: string[], intentoEn: Date): Promise<string[]>;
   contar(tx: Tx, clave: string, desde: Date): Promise<{ n: number; masAntiguo: Date | null }>;
-  registrar(tx: Tx, clave: string, intentoEn: Date): Promise<void>;
-  limpiar(tx: Tx, clave: string): Promise<void>;
+  borrar(tx: Tx, ids: string[]): Promise<void>;
+  limpiar(tx: Tx, claves: string[]): Promise<void>;
 }
