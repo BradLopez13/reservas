@@ -49,6 +49,8 @@ Los ficheros están en `apps/api/src/modules/reservas/infra/persistence/`. En pr
 
 La optimista tiene un coste que el test de franjas distintas deja a la vista: la versión es por pista y día, así que reservas de franjas diferentes también se pisan. Tras tres reintentos perdidos la petición no recibe `PISTA_OCUPADA` (la franja puede estar libre) sino `CONTENCION`, un 503 con `Retry-After: 1` que la idempotencia no guarda: repetir la misma clave vuelve a intentarlo.
 
+Por qué `EXCLUDE` y no las otras dos, y qué se descartó: [ADR 0001](docs/adr/0001-tres-estrategias.md).
+
 ## Sesiones
 
 - Token opaco de 32 bytes en la cookie; en la base de datos solo su SHA-256.
@@ -59,6 +61,8 @@ La optimista tiene un coste que el test de franjas distintas deja a la vista: la
 - Login con Argon2id, mismo error y mismo coste exista o no el email.
 - Límite de intentos en ventanas de 15 minutos con tres contadores: 5 por email e IP, 20 por IP (una máquina probando muchas cuentas) y 50 por email (muchas máquinas contra una). Bloquear la cuenta de otro exige al menos diez IP, no cinco contraseñas. El intento se apunta antes de contar, así que N peticiones simultáneas no se cuelan todas por el mismo recuento.
 - La IP sale de `X-Forwarded-For`, pero solo de la entrada que añade el proxy propio (nginx o Vercel, `TRUST_PROXY_HOPS`); lo que el cliente escriba delante no cuenta.
+
+Por qué cookies opacas y no JWT: [ADR 0002](docs/adr/0002-sesiones-cookie.md).
 
 ## Arquitectura
 

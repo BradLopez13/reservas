@@ -7,5 +7,6 @@ coverage/
 playwright-report/
 test-results/
 .vercel/
-docs/
+docs/*
+!docs/adr/
 .claude/
