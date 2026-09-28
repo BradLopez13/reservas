@@ -1,5 +1,5 @@
 import type { Ctx } from '../../../../contexto.ts';
-import { FranjaInvalida, PistaNoEncontrada, PistaOcupadaError } from '../../../../shared/errores.ts';
+import { Contencion, FranjaInvalida, PistaNoEncontrada } from '../../../../shared/errores.ts';
 import { esFranjaValida } from '../../../pistas/domain/franjas.ts';
 import type { Reserva } from '../../domain/reserva.ts';
 import { ConflictoVersion } from '../../infra/persistence/reservas/optimista.ts';
@@ -16,12 +16,14 @@ export async function reservarPista(ctx: Ctx, d: { usuarioId: string; pistaId: s
         const pista = await ctx.repos.pistas.buscarPorId(tx, d.pistaId);
         if (!pista) throw new PistaNoEncontrada();
         const v = esFranjaValida(pista, d.inicio, ahora);
-        if (v.ok === false) throw new FranjaInvalida(v.motivo); // === false: sin strictNullChecks, `!v.ok` no estrecha la unión
+        if (!v.ok) throw new FranjaInvalida(v.motivo);
         return ctx.repos.reservas.crear(tx, { pistaId: d.pistaId, usuarioId: d.usuarioId, periodo: v.periodo });
       });
     } catch (e) {
       if (!(e instanceof ConflictoVersion)) throw e;
-      if (intento >= REINTENTOS_OPTIMISTA) throw new PistaOcupadaError();
+      // Agotar los reintentos no dice nada de esta franja: la versión es por pista
+      // y día, así que la pudo mover una reserva de otra franja.
+      if (intento >= REINTENTOS_OPTIMISTA) throw new Contencion();
     }
   }
 }

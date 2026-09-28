@@ -28,8 +28,9 @@ export function conIdempotencia(ctx: Ctx, manejador: Manejador): RouteHandlerMet
       await ctx.db.transaction((tx) => ctx.repos.idempotencia.terminar(tx, { ...registro, estadoHttp: status, respuesta: body }));
       return reply.status(status).send(body);
     } catch (e) {
-      if (e instanceof ErrorDominio) {
+      if (e instanceof ErrorDominio && e.status < 500) {
         // Un 409 o un 422 también es una respuesta definitiva: repetir la clave devuelve lo mismo.
+        // Un 503 (contención) no: el reintento con la misma clave debe volver a ejecutarse.
         await ctx.db.transaction((tx) => ctx.repos.idempotencia.terminar(tx, { ...registro, estadoHttp: e.status, respuesta: { error: { code: e.code, message: e.message } } }));
       } else {
         await ctx.db.transaction((tx) => ctx.repos.idempotencia.abandonar(tx, registro));

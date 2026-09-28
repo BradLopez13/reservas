@@ -15,6 +15,9 @@ export class EmailEnUso extends ErrorDominio { constructor() { super(CodigoError
 export class PistaNoEncontrada extends ErrorDominio { constructor() { super(CodigoError.PISTA_NO_ENCONTRADA, 404, 'Pista no encontrada'); } }
 export class FranjaInvalida extends ErrorDominio { constructor(motivo: string) { super(CodigoError.FRANJA_INVALIDA, 422, motivo); } }
 export class PistaOcupadaError extends ErrorDominio { constructor() { super(CodigoError.PISTA_OCUPADA, 409, 'Esa franja ya está reservada'); } }
+// No es que la franja esté ocupada: la estrategia optimista perdió todos sus
+// reintentos contra otras reservas del mismo día. Se puede volver a probar.
+export class Contencion extends ErrorDominio { readonly retryAfterSeg = 1; constructor() { super(CodigoError.CONTENCION, 503, 'Hay muchas reservas a la vez en esa pista, vuelve a intentarlo'); } }
 export class ReservaNoEncontrada extends ErrorDominio { constructor() { super(CodigoError.RESERVA_NO_ENCONTRADA, 404, 'Reserva no encontrada'); } }
 export class FueraDePlazo extends ErrorDominio { constructor() { super(CodigoError.FUERA_DE_PLAZO, 409, 'Solo se puede cancelar hasta 2 horas antes'); } }
 export class IdempotenciaEnCurso extends ErrorDominio { constructor() { super(CodigoError.IDEMPOTENCIA_EN_CURSO, 409, 'Esa petición todavía se está procesando'); } }
