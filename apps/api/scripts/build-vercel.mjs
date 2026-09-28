@@ -48,6 +48,9 @@ writeFileSync(join(func, '.vc-config.json'), JSON.stringify({
   handler: 'index.mjs',
   launcherType: 'Nodejs',
   shouldAddHelpers: false,
+  // Junto a la base de datos (Supabase en eu-west-1, Irlanda): cada consulta de
+  // una transacción es un viaje de ida y vuelta, y desde iad1 cruzaría el Atlántico.
+  regions: ['dub1'],
 }, null, 2));
 
 writeFileSync(join(salida, 'config.json'), JSON.stringify({
