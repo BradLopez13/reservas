@@ -1,7 +1,7 @@
 {
   "app": {
-    "nombre": "Reservas",
-    "pestana": "Court bookings",
+    "nombre": "Rally",
+    "pestana": "Rally · Court booking",
     "lema": "Padel, tennis and football courts by the hour. A portfolio project by Brad López, open source."
   },
   "idioma": {

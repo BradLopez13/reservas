@@ -1,6 +1,6 @@
-# Reservas
+# Rally
 
-Reservas de pistas de pádel, tenis y fútbol, construidas para responder a una pregunta concreta: **¿qué pasa cuando cincuenta personas pulsan «Reservar» a la vez sobre la última franja libre?** Full-stack en TypeScript: API Fastify con PostgreSQL y frontend React, conectados por contratos Zod compartidos.
+Rally: reservas de pistas de pádel, tenis y fútbol, construidas para responder a una pregunta concreta: **¿qué pasa cuando cincuenta personas pulsan «Reservar» a la vez sobre la última franja libre?** Full-stack en TypeScript: API Fastify con PostgreSQL y frontend React, conectados por contratos Zod compartidos.
 
 [![CI](https://github.com/BradLopez13/reservas/actions/workflows/ci.yml/badge.svg)](https://github.com/BradLopez13/reservas/actions/workflows/ci.yml)
 

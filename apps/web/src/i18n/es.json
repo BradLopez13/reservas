@@ -1,7 +1,7 @@
 {
   "app": {
-    "nombre": "Reservas",
-    "pestana": "Reservas de pistas",
+    "nombre": "Rally",
+    "pestana": "Rally · Reserva de pistas",
     "lema": "Pistas de pádel, tenis y fútbol por franjas. Un proyecto de portfolio de Brad López con el código abierto."
   },
   "idioma": {
